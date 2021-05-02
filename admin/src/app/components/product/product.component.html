@@ -1,0 +1,158 @@
+<div class="card-body">
+    <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#exampleModalXl">
+        <i class="fas fa-plus"></i> Nuevo Producto
+    </button>
+</div>
+
+<!-- Modal Register -->
+<div class="modal fade" id="exampleModalXl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+    style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Producto</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <div *ngIf="!submitted">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card mb-4">
+                                <div class="card-header">Detalles Producto</div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <input class="form-control formProduct" id="txtidempresa" type="hidden">
+                                        <input class="borrar form-control" id="txtidproducto" type="hidden">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nombre</label>
+                                        <input class="form-control formProduct" id="txtnombre" type="text"
+                                            placeholder="Nombre del producto" [(ngModel)]="product.name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Descripción</label>
+                                        <textarea class="form-control formProduct" id="txtdescripcion" rows="3"
+                                            [(ngModel)]="product.description"></textarea>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Precio</label>
+                                        <input class="form-control formProduct" id="txtprecio" type="text"
+                                            placeholder="Precio" [(ngModel)]="product.price">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Categoría</label>
+                                        <div class="input-group">
+                                            <select class="form-control formProduct" id="cbocategoria"
+                                                [(ngModel)]="product.category">
+                                                <option *ngFor="let category of categories" [value]="category.name">{{category.name}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label>Subcategoría</label>
+                                        <div class="input-group">
+                                            <select class="form-control formProduct" id="cbosubcategoria"
+                                                [(ngModel)]="product.subcategory">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Estado</label>
+                                        <select class="form-control" id="cboestado" [(ngModel)]="product.status">
+                                            <option selected>-Seleccione-</option>
+                                            <option value="1">Publicado</option>
+                                            <option value="0">No Publicado</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label>Imagen Principal <sup class="text-danger"></sup></label>
+
+                                        <div class="form-group__content">
+                                            <label class="pb-5" for="productImage">
+                                                <img src="{{product.image}}" class="img-fluid changeImage">
+                                            </label>
+
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input formProduct" id="productImage">
+                                                <div class="valid-feedback">Valid.</div>
+                                                <div class="invalid-feedback">Please fill out this field.</div>
+                                                <label class="custom-file-label" for="productImage">Selecciona la imagen</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-header">Galería Producto</div>
+                                <div class="custom-dropzone mb-5" ngx-dropzone [accept]="'image/*'"
+                                    (change)="onSelect($event)">
+
+                                    <ngx-dropzone-label>
+                                        <div>
+                                            <h2 class="text-muted">Arrastre las imágenes</h2>
+                                        </div>
+                                    </ngx-dropzone-label>
+                                    <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview"
+                                        *ngFor="let f of files" [file]="f" [removable]="true" (removed)="onRemove(f)">
+
+                                        <ngx-dropzone-label>
+                                            {{f.name }} {{f.type}}
+                                        </ngx-dropzone-label>
+
+                                    </ngx-dropzone-image-preview>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnCancelar" type="button" class="btn btn-danger"
+                            data-dismiss="modal">Cancelar</button>
+                        <button type="button" (click)="saveProduct()" class="btn btn-success">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">PRODUCTOS</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive" id="tabla">
+            <table class='table table-bordered' width='100%' cellspacing='0'>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Imagen</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Operaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="" *ngFor="let item of products | async">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.image}}</td>
+                        <td>{{item.category}}</td>
+                        <td>{{item.price}}</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
