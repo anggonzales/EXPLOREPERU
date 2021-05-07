@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
-import  { NgForm } from '@angular/forms';
+import { Component, OnInit, Input, NgZone, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/models/Product';
 import { CategoryService } from 'src/app/services/category.service';
-import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product',
@@ -12,63 +13,76 @@ import { map } from 'rxjs/operators';
 })
 export class ProductComponent implements OnInit {
 
-  products = this.productService.products;
+  @ViewChild('closebutton') closebutton;
+
   private image: any;
   product: Product = new Product();
   submitted = false;
   files: File[] = [];
-  imageProduct:File = null;
-  categories:any;
-  subcategories:any[] = [];
+  imageProduct: File = null;
+  categories: any[] = [];
+  products: any[] = [];
+  subcategories: any[] = [];
 
-  constructor( private productService: ProductService, private categoryService: CategoryService ) { }
+  constructor(private productService: ProductService, private categoryService: CategoryService, private toastr: ToastrService,
+    private router: Router, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.retrieveCategories();
+    this.getCategories();
+    this.getProducts();
   }
 
-  retrieveCategories(): void {
-    this.categoryService.getData().snapshotChanges().pipe(
-      map(changes =>
-        changes.map(c =>
-          ({ id: c.payload.doc.id, ...c.payload.doc.data() })
-        )
-      )
-    ).subscribe(data => {
-      this.categories = data;
+  getProducts() {
+    this.productService.getProducts().subscribe(data => {
+      data.forEach((element: any) => {
+        this.products.push({
+          id: element.payload.doc.id,
+          ...element.payload.doc.data()
+        })
+      });
     });
   }
 
-  saveProduct(data: Product): void {
-    //this.productService.preAddAndUpdatePost(data, this.image);
-    //this.submitted = true;
-    this.productService.create(this.product).then(() => {
+  getCategories(): void {
+    this.categoryService.getCategories().subscribe(data => {
+      data.forEach((element: any) => {
+        this.categories.push({
+          id: element.payload.doc.id,
+          ...element.payload.doc.data()
+        })
+      });
+    });
+  }
+
+  saveProduct() : void {
+    this.productService.createProduct(this.product).then(() => {
+      this.toastr.success('El producto se ha agregado correctamente', 'Producto registrado', {
+        positionClass: 'toast-top-right'
+      });
       console.log('Se ha ingresado satisfactoriamente');
       this.submitted = true;
+      this.closebutton.nativeElement.click();
     });
   }
 
   newProduct(): void {
     this.submitted = true;
-    this.product = new Product();
+    //this.product = new Product();
   }
 
-  listProduct(): void {
 
+  /* Funciones para el maneja de la galería de imagenes*/
+  onSelect(event) {
+    this.files.push(...event.addedFiles);
+    console.log(event);
+  }
+
+  onRemove(event) {
+    this.files.splice(this.files.indexOf(event), 1);
   }
 
   handleImage(event: any): void {
     this.image = event.target.files[0];
-  }
-
-  onSelect(event) {
-        
-    this.files.push(...event.addedFiles);
-  }
-
-  onRemove(event) {
-     
-    this.files.splice(this.files.indexOf(event), 1);
   }
 
 }

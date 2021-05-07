@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { Observable } from 'rxjs';
 import { Category } from '../models/category';
 
 @Injectable({
@@ -9,17 +9,12 @@ import { Category } from '../models/category';
 })
 export class CategoryService {
 
-  private dbPath = '/categories';
-  private filePath: any;
-  categoryRef: AngularFirestoreCollection<Category> = null;
+  constructor(private firestore: AngularFirestore) {
 
-  constructor(private db: AngularFirestore, private storage: AngularFireStorage) {
-    this.categoryRef = db.collection(this.dbPath);
    }
 
-
-  getData(): AngularFirestoreCollection<Category> {
-    return this.categoryRef;
+  getCategories() : Observable<any> {
+    return this.firestore.collection('categories').snapshotChanges();
   }
   
 }

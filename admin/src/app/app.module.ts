@@ -1,17 +1,26 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ProductComponent } from './components/product/product.component';
-import { OrderComponent } from './components/order/order.component';
+
+//Modulos varios
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { FormsModule } from '@angular/forms';
+import { Ng5SliderModule } from 'ng5-slider';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule, ToastContainerModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+//Modulos Firebase
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+
+import { ProductComponent } from './components/product/product.component';
+import { OrderComponent } from './components/order/order.component';
+import { QuoteComponent } from './components/quote/quote.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 const config = {
   apiKey: "AIzaSyBGQ5lU2iwjN35W2QkcAJoI4YJ3t4PSbcY",
@@ -28,7 +37,9 @@ const config = {
   declarations: [
     AppComponent,
     ProductComponent,
-    OrderComponent
+    OrderComponent,
+    QuoteComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -37,8 +48,12 @@ const config = {
     AngularFireModule.initializeApp(config),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    Ng5SliderModule,
     AngularFireStorageModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
