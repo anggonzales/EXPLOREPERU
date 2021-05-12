@@ -1,136 +1,158 @@
-<div class="modal fade" id="exampleModalXl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
-    style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Extra Large Modal</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-xl-6">
-                        <div class="card">
-                            <div class="card-header">Cotización cliente</div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label>Producto</label>
-                                    <input class="form-control" type="text" placeholder="" disabled>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label>Cantidad estimada</label>
-                                            <input class="form-control" type="text" placeholder="" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label>Unidades</label>
-                                            <select class="form-control" disabled>
-                                                <option selected>Barriles</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Términos de pago</label>
-                                    <select class="form-control" disabled>
-                                        <option selected></option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Fecha de Entrega</label>
-                                    <input class="form-control" type="text" placeholder="" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label>País</label>
-                                    <input class="form-control" type="text" placeholder="" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label>Mensaje</label>
-                                    <textarea class="form-control" id="txtdescripcion" rows="3" disabled></textarea>
-                                </div>
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <app-sidebar></app-sidebar>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <app-topbar></app-topbar>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <div class="modal fade" id="exampleModalXl" tabindex="-1" role="dialog"
+                    aria-labelledby="myExtraLargeModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Extra Large Modal</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">×</span></button>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6">
-                        <div class="card mb-4">
-                            <div class="card-header">Responder Cotización</div>
-                            <div class="card-body">
+                            <div class="modal-body">
                                 <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label>Cantidad estimada</label>
-                                            <input class="form-control" type="text" placeholder="">
+                                    <div class="col-xl-6">
+                                        <div class="card">
+                                            <div class="card-header">Cotización cliente</div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Producto</label>
+                                                    <input class="form-control" type="text" placeholder="" disabled>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <label>Cantidad estimada</label>
+                                                            <input class="form-control" type="text" placeholder=""
+                                                                disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <label>Unidades</label>
+                                                            <select class="form-control" disabled>
+                                                                <option selected>Barriles</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Términos de pago</label>
+                                                    <select class="form-control" disabled>
+                                                        <option selected></option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Fecha de Entrega</label>
+                                                    <input class="form-control" type="text" placeholder="" disabled>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>País</label>
+                                                    <input class="form-control" type="text" placeholder="" disabled>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mensaje</label>
+                                                    <textarea class="form-control" id="txtdescripcion" rows="3"
+                                                        disabled></textarea>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label>Unidades</label>
-                                            <select class="form-control">
-                                                <option selected>Barriles</option>
-                                            </select>
+                                    <div class="col-xl-6">
+                                        <div class="card mb-4">
+                                            <div class="card-header">Responder Cotización</div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <label>Cantidad estimada</label>
+                                                            <input class="form-control" type="text" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <label>Unidades</label>
+                                                            <select class="form-control">
+                                                                <option selected>Barriles</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Términos de pago</label>
+                                                    <select class="form-control">
+                                                        <option selected></option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Fecha de Entrega</label>
+                                                    <input class="form-control" type="date" placeholder="">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Términos de pago</label>
-                                    <select class="form-control">
-                                        <option selected></option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Fecha de Entrega</label>
-                                    <input class="form-control" type="date" placeholder="">
+                                <div class="modal-footer">
+                                    <button id="btnCancelar" type="button" class="btn btn-danger"
+                                        data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-success">Aceptar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="btnCancelar" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success">Aceptar</button>
+
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">COTIZACIONES</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class='table table-bordered' id="dataTable" width='100%' cellspacing='0'>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Cliente</th>
+                                        <th>Producto</th>
+                                        <th>País</th>
+                                        <th>Fecha</th>
+                                        <th>Operaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <button class="btn btn-success mr-3" data-toggle="modal"
+                                                data-target="#exampleModalXl"><i
+                                                    class="far fa-sticky-note"></i></button>
+                                            <button class="btn btn-warning"><i class="fa fa-comments"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- DataTales Example -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">COTIZACIONES</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class='table table-bordered' id="dataTable" width='100%' cellspacing='0'>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Cliente</th>
-                        <th>Producto</th>
-                        <th>País</th>
-                        <th>Fecha</th>
-                        <th>Operaciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <button class="btn btn-success mr-3" data-toggle="modal" data-target="#exampleModalXl"><i
-                                    class="far fa-sticky-note"></i></button>
-                            <button class="btn btn-warning"><i class="fa fa-comments"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 </div>

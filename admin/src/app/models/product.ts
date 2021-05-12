@@ -1,13 +1,11 @@
 export class Product{
-        id: any;
-        name: string;
-        store: string;
-        description: string;
-        price: string;
-        detail: string;
-        image: any;
-        gallery: string;
-        status: string;
-        category: string;
-        subcategory: string;
+        name?: string;
+        store?: string;
+        description?: string;
+        price?: string;
+        image?: any;
+        gallery?: any;
+        status?: string;
+        category?: string;
+        subcategory?: string;
 }

@@ -10,6 +10,7 @@ import { Ng5SliderModule } from 'ng5-slider';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule, ToastContainerModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DataTablesModule } from 'angular-datatables';
 
 //Modulos Firebase
 import { AngularFireModule } from '@angular/fire';
@@ -21,6 +22,10 @@ import { ProductComponent } from './components/product/product.component';
 import { OrderComponent } from './components/order/order.component';
 import { QuoteComponent } from './components/quote/quote.component';
 import { ChatComponent } from './components/chat/chat.component';
+import { HomeComponent } from './modules/home/home.component';
+import { TopbarComponent } from './modules/topbar/topbar.component';
+import { FooterComponent } from './modules/footer/footer.component';
+import { SidebarComponent } from './modules/sidebar/sidebar.component';
 
 const config = {
   apiKey: "AIzaSyBGQ5lU2iwjN35W2QkcAJoI4YJ3t4PSbcY",
@@ -39,7 +44,11 @@ const config = {
     ProductComponent,
     OrderComponent,
     QuoteComponent,
-    ChatComponent
+    ChatComponent,
+    HomeComponent,
+    TopbarComponent,
+    FooterComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +58,7 @@ const config = {
     AngularFirestoreModule,
     AngularFireAuthModule,
     Ng5SliderModule,
+    DataTablesModule,
     AngularFireStorageModule,
     NgxDropzoneModule,
     ToastrModule.forRoot(),
