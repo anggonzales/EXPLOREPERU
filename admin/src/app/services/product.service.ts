@@ -17,21 +17,21 @@ export class ProductService {
   private databaseFirebase = '/products';
   productReference: AngularFirestoreCollection<Product>;
   private downloadURL: Observable<string>;
-  private downloadURLGallery: Observable<[]>;
+  public downloadURLGallery: any[] = [];
+  public galleryList : any[] = [];
 
   constructor(private firestore: AngularFirestore, private storage: AngularFireStorage) {
     this.productReference = firestore.collection(this.databaseFirebase);
   }
 
   createProduct(product: Product) {
-
     const productObj = {
       name: product.name,
       store: 'Peruana S.A.C',
       description: product.description,
       price: product.price,
       image: this.downloadURL,
-      gallery: this.downloadURL,
+      gallery: this.galleryList,
       status: product.status,
       category: product.category,
       subcategory: product.subcategory
@@ -40,8 +40,8 @@ export class ProductService {
     return this.productReference.add(productObj);
   }
 
-  public createProductImage(product: Product, image: FileI): void {
-    this.uploadImageProduct(product, image);
+  public createProductImage(product: Product, image: FileI, gallery: Array<any>): void {
+    this.uploadImageProduct(product, image, gallery);
   }
 
   updateProduct(id: string, data: any): Promise<void> {
@@ -56,7 +56,23 @@ export class ProductService {
     return this.productReference.snapshotChanges();
   }
 
-  uploadImageProduct(product: Product, image: FileI) {
+  uploadImageProduct(product: Product, image: FileI, gallery: Array<any>) {
+
+    for (let i = 0; i < gallery.length; i++) {
+      var filePath2 = `images/${gallery[i].name}`;
+      const fileRef2 = this.storage.ref(filePath2);
+      const task2 = this.storage.upload(filePath2, gallery[i]);
+      task2.snapshotChanges()
+        .pipe(
+          finalize(() => {
+            fileRef2.getDownloadURL().subscribe(urlImage2 => {
+              this.downloadURLGallery = urlImage2
+              this.galleryList.push(this.downloadURLGallery);
+            });
+          })
+        ).subscribe();
+    }
+
     var filePath = `images/${image.name}`;
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, image);
@@ -70,20 +86,6 @@ export class ProductService {
         })
       ).subscribe();
 
-    /*for (let i = 0; i < gallery.length; i++) {
-      var filePath2 = `images/${gallery[i]}`;
-      const fileRef2 = this.storage.ref(filePath2);
-      const task2 = this.storage.upload(filePath2, gallery);
-      task2.snapshotChanges()
-        .pipe(
-          finalize(() => {
-            fileRef2.getDownloadURL().subscribe(urlImage2 => {
-              this.downloadURLGallery = urlImage2;
-              this.createProduct(product);
-            });
-          })
-        ).subscribe();
-    }*/
 
   }
 }

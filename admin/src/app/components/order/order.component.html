@@ -24,18 +24,63 @@
                             <div class="modal-body">
                                 <div>
                                     <div class="row">
-                                        <div class="col-xl-12">
+                                        <div class="col-xl-6">
+                                            <div class="card mb-4">
+                                                <div class="card-header">Detalles Producto</div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Cantidad</label>
+                                                                <input class="form-control" type="text" placeholder=""
+                                                                    disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Unidades</label>
+                                                                <select class="form-control" disabled>
+                                                                    <option selected>Barriles</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Términos de pago</label>
+                                                        <input class="form-control" type="text" placeholder="" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Fecha de Entrega</label>
+                                                        <input class="form-control" type="text" placeholder="" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-6">
                                             <div class="card mb-4">
                                                 <div class="card-header">Detalles de la producción</div>
                                                 <div class="card-body">
-                                                    <div class="form-group">
-                                                        <label>Avance de Producción</label>
-                                                        <ng5-slider [(value)]="value"
-                                                            [options]="options"></ng5-slider>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Avance</label>
+                                                                <input class="form-control" type="text" placeholder=""
+                                                                    disabled>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-success">Enviar
-                                                            Notificación</button>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Avance de Producción</label>
+                                                                <ng5-slider [(value)]="value" [options]="options">
+                                                                </ng5-slider>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <button type="button" class="btn btn-success">Enviar
+                                                                    Notificación</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -141,7 +186,8 @@
                                         <td>
                                             <button class="btn btn-success mr-3" data-toggle="modal"
                                                 data-target="#exampleModalXl"><i class="fa fa-archive"></i></button>
-                                            <button class="btn btn-warning"><i class="fa fa-comments"></i></button>
+                                            <a routerLink="/chat" class="btn btn-warning mr-3" target="_blank"><i
+                                                    class="fa fa-comments"></i></a>
                                         </td>
                                     </tr>
                                 </tbody>

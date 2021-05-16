@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { SubcategoryService } from 'src/app/services/subcategory.service';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-product',
@@ -18,10 +19,10 @@ export class ProductComponent implements OnInit {
   @ViewChild('closebutton') closebutton;
 
   private image: any;
-  private imageGallery : any;
+  private imageGallery: any;
   product: Product = new Product();
   submitted = false;
-  gallery: File[] = [];
+  files: File[] = [];
   imageProduct: File = null;
   categories: any[] = [];
   products: any[] = [];
@@ -40,13 +41,13 @@ export class ProductComponent implements OnInit {
   }
 
   getProducts() {
-    this.productService.getProducts().subscribe((data:any[]) => {
-      data.forEach((element: any) => {
-        this.products.push({
-          id: element.payload.doc.id,
-          ...element.payload.doc.data()
-        })
-      });
+    this.productService.getProducts().pipe(
+      map(changes => changes.map(c => ({ 
+        id: c.payload.doc.id, ...c.payload.doc.data() })
+        )
+      )
+    ).subscribe(data => {
+      this.products = data;
     });
   }
 
@@ -74,15 +75,15 @@ export class ProductComponent implements OnInit {
 
 
   saveProduct(): void {
-    this.productService.createProductImage(this.product, this.image);
+    this.productService.createProductImage(this.product, this.image, this.files);
     //this.productService.createProduct(this.product).then(() => {
-      /* GUARDAR DATOS DE PRODUCTO*/
-      this.toastr.success('El producto se ha agregado correctamente', 'Producto registrado', {
+    /* GUARDAR DATOS DE PRODUCTO*/
+    this.toastr.success('El producto se ha agregado correctamente', 'Producto registrado', {
       positionClass: 'toast-top-right'
-      });
-      console.log('Se ha ingresado satisfactoriamente');
-      this.submitted = true;
-      this.closebutton.nativeElement.click();
+    });
+    console.log('Se ha ingresado satisfactoriamente');
+    this.submitted = true;
+    this.closebutton.nativeElement.click();
     //});
   }
 
@@ -91,7 +92,7 @@ export class ProductComponent implements OnInit {
   }
 
 
-  /* Funciones para el maneja de la galería de imagenes*/
+  /* Funciones para el manejo de la galería de imagenes*/
   showPreview(event: any) {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
@@ -112,11 +113,12 @@ export class ProductComponent implements OnInit {
   }
 
   onSelect(event) {
-    this.gallery.push(...event.addedFiles);
+    this.files.push(...event.addedFiles);
+      console.log(event);
   }
 
   onRemove(event) {
-    this.gallery.splice(this.gallery.indexOf(event), 1);
+    this.files.splice(this.files.indexOf(event), 1);
   }
 
   handleImage(event: any): void {

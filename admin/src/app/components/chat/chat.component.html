@@ -13,7 +13,7 @@
                     <div class="chat-content px-lg-8" #scrollMe>
                         <div class="container-xxl py-6 py-lg-10">
 
-                            <ng-container *ngFor="let message of messages | async">
+                            <ng-container *ngFor="let message of messages">
                                 <!-- Message -->
                                 <div class="message">
                                     <!-- Avatar -->
@@ -33,9 +33,7 @@
                                                 <div class="message-content bg-light">
                                                     <h6 class="mb-2"></h6>
                                                     <div>{{message.messageText}}</div>                                                  
-                                                    <div></div>
-
-
+                                                    <div>{{message.translatedMessage}}</div>
                                                     <div class="mt-1">
                                                         <small class="opacity-65"></small>
                                                     </div>
@@ -157,4 +155,6 @@
 
     </div>
 </div>
+
+
 <!-- Main Content -->
