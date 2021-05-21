@@ -1,0 +1,197 @@
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <app-sidebar></app-sidebar>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <app-topbar></app-topbar>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="modal-body">
+                    <form [formGroup]="formOrder" (ngSubmit)="updateOrder()">
+                        <div>
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <div class="card mb-4">
+                                        <div class="card-header">Detalles Producto</div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-xl-2">
+                                                    <div class="form-group">
+                                                        <img src="https://firebasestorage.googleapis.com/v0/b/explore-peru-from-abroad.appspot.com/o/images%2FgetImageOlivo.png?alt=media&token=f1592928-9909-4a79-933c-7948a7fbc961"
+                                                            width="100" height="100" />
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Producto</label>
+                                                        <input class="form-control" type="text" placeholder="" formControlName="nameProduct">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Precio</label>
+                                                        <input class="form-control" type="text" placeholder="" formControlName="priceProduct">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Cantidad</label>
+                                                        <input class="form-control" type="text" placeholder="" formControlName="estimatedAmount">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Unidades</label>
+                                                        <input class="form-control" type="text" placeholder="" formControlName="unit">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Términos de pago</label>
+                                                        <input class="form-control" type="text" formControlName="paymentTerms">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Fecha de Entrega</label>
+                                                        <input class="form-control" type="text" formControlName="shippingDate">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Destino</label>
+                                                        <input class="form-control" type="text" formControlName="destiny">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-4">
+                                        <div class="card-header">Detalles del cliente</div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Cliente</label>
+                                                        <input class="form-control" type="text" formControlName="nameClient">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Correo electrónico</label>
+                                                        <input class="form-control" type="text" formControlName="emailClient">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="card mb-4">
+                                        <div class="card-header">Detalles de la producción</div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Avance</label>
+                                                        <input class="form-control" type="text" placeholder="" formControlName="stateProduction" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label>Avance de Producción</label>
+                                                        <ng5-slider [(value)]="value" formControlName="stateProduction" [options]="options" (valueChange)="getAdvance($event)">
+                                                        </ng5-slider>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button type="submit"
+                                                            class="btn btn-info btn-sm">Actualizar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-4">
+                                        <div class="card-header">Proceso de Exportación </div>
+                                        <div class="card-body">
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <div class="custom-control custom-switch">
+                                                                <input class="custom-control-input" type="checkbox" 
+                                                                    id="customSwitch1" (change)="getSwitcherDAM(isSwitchedDAM)" [checked]="checkDAM">
+                                                                <label class="custom-control-label"
+                                                                    for="customSwitch1">Generación
+                                                                    de archivo DAM</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <button type="button" class="btn btn-success btn-sm" (click)="sendMail()">Enviar
+                                                                notificación</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input class="custom-control-input" type="checkbox"
+                                                                id="customSwitch2" (change)="getSwitcherDepost(isSwitchedDepost)">
+                                                            <label class="custom-control-label"
+                                                                for="customSwitch2">Depósito
+                                                                Temporal</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <button class="btn btn-success btn-sm">Enviar
+                                                            notificación</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input class="custom-control-input" type="checkbox"
+                                                                id="customSwitch3" (change)="getSwitcherOrder(isSwitchedOrder)">
+                                                            <label class="custom-control-label"
+                                                                for="customSwitch3">Orden de
+                                                                Salida</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <button class="btn btn-success btn-sm">Enviar
+                                                            notificación</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
