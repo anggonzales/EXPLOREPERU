@@ -11,17 +11,8 @@ describe('OrderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      declarations: [
-        OrderComponent
-      ],
-      providers: [
-        OrderService
-      ]
+      declarations: [ OrderComponent ]
     })
-      .compileComponents();
   });
 
   beforeEach(() => {

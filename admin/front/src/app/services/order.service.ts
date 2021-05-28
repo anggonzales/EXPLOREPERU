@@ -17,7 +17,7 @@ export class OrderService {
     this.orderReference = firestore.collection(this.databaseFirebase);
   }
 
-  /** Iniciando conexión con el backend para el envío de correo electrónico  */
+  /* Iniciando conexión con el backend para el envío de correo electrónico  */
   sendEmail(obj): Observable<Email> {
     console.log(obj);
     return this.http.post<Email>('http://localhost:3000/sendFormData', obj)

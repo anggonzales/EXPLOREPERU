@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule} from "@angular/common/http";
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-//Modulos varios
+//Módulos varios
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { FormsModule } from '@angular/forms';
 import { Ng5SliderModule } from 'ng5-slider';
@@ -13,8 +13,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule, ToastContainerModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DataTablesModule } from 'angular-datatables';
+import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 
-//Modulos Firebase
+//Módulos Firebase
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
@@ -29,6 +30,7 @@ import { TopbarComponent } from './modules/topbar/topbar.component';
 import { FooterComponent } from './modules/footer/footer.component';
 import { SidebarComponent } from './modules/sidebar/sidebar.component';
 import { AddOrderComponent } from './components/add-order/add-order.component';
+import { LoginComponent } from './components/login/login.component';
 
 const config = {
   apiKey: "AIzaSyBGQ5lU2iwjN35W2QkcAJoI4YJ3t4PSbcY",
@@ -52,7 +54,8 @@ const config = {
     TopbarComponent,
     FooterComponent,
     SidebarComponent,
-    AddOrderComponent
+    AddOrderComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -66,6 +69,9 @@ const config = {
     AngularFireStorageModule,
     NgxDropzoneModule,
     ToastrModule.forRoot(),
+    ConfirmationPopoverModule.forRoot({
+      confirmButtonType: 'danger',
+    }),
     BrowserAnimationsModule,
     HttpClientModule,
     HttpClientTestingModule,

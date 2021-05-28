@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Options } from 'ng5-slider';
@@ -12,16 +12,37 @@ import { OrderService } from 'src/app/services/order.service';
 })
 export class AddOrderComponent implements OnInit {
 
+  /* Código para la configuración de popover confirmation */
+  placements = ['top', 'left', 'right', 'bottom'];
+  popoverTitle = 'Mensaje de confirmación';
+  popoverMessage = '¿Está seguro de realizar esta operación?';
+  confirmText = 'Sí <i class="fas fa-check"></i>';
+  cancelText = 'No <i class="fas fa-times"></i>';
+  /*------------------------------------------------------*/
+
   formOrder: FormGroup;
+
+  isReadonlyDAM: boolean;
+  isReadonlyDepostTemporary: Boolean;
+  isReadonlyOrder: boolean;
+
   isSwitchedDAM: boolean = false;
   isSwitchedDepost: boolean = false;
   isSwitchedOrder: boolean = false;
-  public productionNumber;
+
   checkDAM: boolean = false;
+  checkDepostTemporary: boolean = false;
+  checkOrder: boolean = false;
+
   production: any;
+  stateProduction: any;
   submitted = false;
-  public email: any;
+  email: any[] = [];
   id: string | null;
+
+  @Input() checkIdDAM: boolean;
+  @Input() checkIdDepostTemporary: boolean;
+  @Input() checkIdOrder: boolean;
 
   constructor(private orderService: OrderService,
     private formBuilder: FormBuilder,
@@ -38,20 +59,21 @@ export class AddOrderComponent implements OnInit {
       estimatedAmount: [{ value: '', disabled: true }, Validators.required],
       unit: [{ value: '', disabled: true }, Validators.required],
       destiny: [{ value: '', disabled: true }, Validators.required],
-      shippingDate: [{ value: '', disabled: true }, Validators.required]
+      shippingDate: [{ value: '', disabled: true }, Validators.required],
+      stateProduction: ['', Validators.required]
     })
     this.id = this.aRoute.snapshot.paramMap.get('id');
-    console.log(this.id)
-  }
-  
-
-  getAdvance(value: number): void {
-    this.production = `${value}`;
-    console.log(this.production);
+    console.log(this.id);
   }
 
   ngOnInit(): void {
     this.getOrder();
+    this.isReadonlyDAM = true;
+  }
+
+  getAdvance(value: number): void {
+    this.production = `${value}`;
+    console.log(this.production);
   }
 
 
@@ -68,10 +90,7 @@ export class AddOrderComponent implements OnInit {
 
   editOrder(id: string) {
     const order: any = {
-      stateProduction: this.production,
-      stateDAM: this.isSwitchedDAM,
-      stateDepostTemporary: this.isSwitchedDepost,
-      stateStartingOrder: this.isSwitchedOrder
+      stateProduction: this.production
     }
 
     this.orderService.updateOrder(id, order).then(() => {
@@ -81,9 +100,77 @@ export class AddOrderComponent implements OnInit {
     })
   }
 
+  editOrderDAM(id: string) {
+    const order: any = {
+      stateDAM: this.isSwitchedDAM
+    }
+
+    this.orderService.updateOrder(id, order).then(() => {
+      this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
+        positionClass: 'toast-bottom-right'
+      });
+    });
+  }
+
+  editOrderDepostTemporary(id: string) {
+    const order: any = {
+      stateDepostTemporary: this.isSwitchedDepost
+    }
+    this.orderService.updateOrder(id, order).then(() => {
+      this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
+        positionClass: 'toast-bottom-right'
+      });
+    });
+  }
+
+  editOrderState(id: string) {
+    const order: any = {
+      stateOrder: this.isSwitchedOrder
+    }
+    this.orderService.updateOrder(id, order).then(() => {
+      this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
+        positionClass: 'toast-bottom-right'
+      });
+    });
+  }
+
+
+
   getOrder() {
     if (this.id !== null) {
       this.orderService.getOrder(this.id).subscribe(data => {
+        this.stateProduction = data.payload.data()['stateProduction'];
+        this.checkDAM = data.payload.data()['stateDAM'];
+        this.checkDepostTemporary = data.payload.data()['stateDepostTemporary'];
+        this.checkOrder = data.payload.data()['stateOrder'];
+
+        if(this.checkDAM === true){
+          console.log(this.checkDAM);
+          this.checkIdDAM = true;
+          this.isReadonlyDAM = true;
+        } else {
+          this.checkIdDAM = false;
+          this.isReadonlyDAM = false;
+        }
+
+        if(this.checkDepostTemporary === true){
+          console.log(this.checkDepostTemporary);
+          this.checkIdDepostTemporary = true;
+          this.isReadonlyDepostTemporary = true;
+        } else {
+          this.checkIdDepostTemporary = false;
+          this.isReadonlyDepostTemporary = false;
+        }
+
+        if(this.checkOrder === true){
+          console.log(this.checkOrder);
+          this.checkIdOrder = true;
+          this.isReadonlyOrder = true;
+        } else {
+          this.checkIdOrder = false;
+          this.isReadonlyOrder = false;
+        }
+
         this.formOrder.setValue({
           emailClient: data.payload.data()['emailClient'],
           nameClient: data.payload.data()['nameClient'],
@@ -97,22 +184,21 @@ export class AddOrderComponent implements OnInit {
           stateProduction: data.payload.data()['stateProduction']
         })
       });
-      this.orderService.getOrder(this.id).subscribe(data => {
-        this.checkDAM = data.payload.data()['stateDAM'];
-        console.log(this.checkDAM);
-      });
     }
   }
 
-  sendMail() {
-    this.email = {
-      name: 'Se ha generado la Declaración de Mercancías Aduanero',
-      email: 'aggc9982@gmail.com'
-    }
 
-    this.orderService.sendEmail(this.email).subscribe(data => {
+
+  sendMailDAM() {
+    const email = {
+      name: 'Angel',
+      email: 'info@gmail.com'
+    }
+    this.orderService.sendEmail(email).subscribe(data => {
+      console.log(email);
       let msg = data['message']
-      console.log(msg);
+      alert(msg);
+      console.log(data, "success");
     }, error => {
       console.error(error, "error");
     });
@@ -123,19 +209,51 @@ export class AddOrderComponent implements OnInit {
   /** Código fuente extraído de Stackoverflow 
     *  Url="https://stackoverflow.com/questions/56754494/how-to-get-value-of-on-off-switch"
   */
-  
 
   getSwitcherDAM(onoffswicth) {
     this.isSwitchedDAM = !this.isSwitchedDAM;
     console.log("onoffswicth:" + this.isSwitchedDAM);
-  }
+    if (this.id !== null) {
+      this.editOrderDAM(this.id);
+
+    }
+    else {
+
+    }
+  }  
+
   getSwitcherDepost(onoffswicth) {
     this.isSwitchedDepost = !this.isSwitchedDepost;
     console.log("onoffswicth:" + this.isSwitchedDepost);
+    if (this.id !== null) {
+      this.editOrderDepostTemporary(this.id);
+    }
+    else {
+
+    }
   }
+
   getSwitcherOrder(onoffswicth) {
     this.isSwitchedOrder = !this.isSwitchedOrder;
     console.log("onoffswicth:" + this.isSwitchedOrder);
+    if (this.id !== null) {
+      this.editOrderState(this.id);
+    }
+    else {
+
+    }
+  }
+
+  getCancelDAM(onoffswicth) {
+    this.checkIdDAM = false;
+  }
+
+  getCancelOrder(onoffswicth) {
+    this.checkIdOrder = false;
+  }
+
+  getCancelDepost(onoffswicth) {
+    this.checkIdDepostTemporary = false;
   }
 
   value: number = 10;

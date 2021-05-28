@@ -1,0 +1,39 @@
+<div class="layout">
+
+    <div class="container d-flex flex-column">
+        <div class="row align-items-center justify-content-center no-gutters min-vh-100">
+
+            <div class="col-12 col-md-5 col-lg-4 py-8 py-md-11">
+
+                <!-- Heading -->
+                <h1 class="font-bold text-center">INICIAR SESIÓN</h1>
+
+                <!-- Text -->
+                <p class="text-center mb-6"></p>
+
+                <!-- Form -->
+                <form class="mb-6">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="sr-only">Correo electrónico</label>
+                        <input type="email" class="form-control form-control-lg" id="email" [(ngModel)]="email"
+                            [ngModelOptions]="{standalone: true}" placeholder="Ingrese su correo electrónico">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password" class="sr-only">Contraseña</label>
+                        <input type="password" class="form-control form-control-lg" id="password" name="password"
+                            [(ngModel)]="password" [ngModelOptions]="{standalone: true}"
+                            placeholder="Ingrese su contraseña">
+                    </div>
+
+                    <!-- Submit -->
+                    <button class="btn btn-lg btn-block btn-primary" type="button" (click)="login()">Iniciar
+                        Sesión</button>
+                </form>
+
+            </div>
+        </div> <!-- / .row -->
+    </div>
+</div><!-- .layout -->

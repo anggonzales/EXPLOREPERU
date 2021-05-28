@@ -10,7 +10,6 @@ describe('AddOrderComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ AddOrderComponent ]
     })
-    .compileComponents();
   });
 
   beforeEach(() => {

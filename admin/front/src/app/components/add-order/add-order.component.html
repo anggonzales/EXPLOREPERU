@@ -82,13 +82,13 @@
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label>Cliente</label>
-                                                        <input class="form-control" type="text" formControlName="nameClient">
+                                                        <input class="form-control" type="text" formControlName="nameClient" #name>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label>Correo electrónico</label>
-                                                        <input class="form-control" type="text" formControlName="emailClient">
+                                                        <input class="form-control" type="text" formControlName="emailClient" #email>
                                                     </div>
                                                 </div>
                                             </div>
@@ -103,7 +103,7 @@
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label>Avance</label>
-                                                        <input class="form-control" type="text" placeholder="" formControlName="stateProduction" disabled>
+                                                        <input class="form-control" type="text" placeholder="" formControlName="stateProduction" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -130,8 +130,19 @@
                                                     <div class="col">
                                                         <div class="form-group">
                                                             <div class="custom-control custom-switch">
-                                                                <input class="custom-control-input" type="checkbox" 
-                                                                    id="customSwitch1" (change)="getSwitcherDAM(isSwitchedDAM)" [checked]="checkDAM">
+                                                                <input *ngIf="stateProduction" class="custom-control-input" type="checkbox" 
+                                                                    id="customSwitch1" 
+                                                                    [ngModelOptions]="{standalone: true}"
+                                                                    [(ngModel)]="checkIdDAM"
+                                                                    [disabled]="isReadonlyDAM"
+                                                                    mwlConfirmationPopover
+                                                                    [popoverTitle]="popoverTitle"
+                                                                    [popoverMessage]="popoverMessage"
+                                                                    [confirmText]="confirmText"
+                                                                    [cancelText]="cancelText"
+                                                                    placement="top"
+                                                                    (confirm)="getSwitcherDAM(isSwitchedDAM)"
+                                                                    (cancel)="getCancelDAM(isSwitchedDAM)">
                                                                 <label class="custom-control-label"
                                                                     for="customSwitch1">Generación
                                                                     de archivo DAM</label>
@@ -139,10 +150,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="col">
-                                                        <div class="form-group">
-                                                            <button type="button" class="btn btn-success btn-sm" (click)="sendMail()">Enviar
-                                                                notificación</button>
-                                                        </div>
+                                                        <form (ngSubmit)="sendMailDAM()" #form="ngForm">
+                                                            <div class="form-group">
+                                                                <button class="btn btn-success btn-sm" type="submit">Enviar
+                                                                    notificación</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </form>
@@ -151,7 +164,18 @@
                                                     <div class="form-group">
                                                         <div class="custom-control custom-switch">
                                                             <input class="custom-control-input" type="checkbox"
-                                                                id="customSwitch2" (change)="getSwitcherDepost(isSwitchedDepost)">
+                                                                id="customSwitch2" 
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                [(ngModel)]="checkIdDepostTemporary"
+                                                                [disabled]="isReadonlyDepostTemporary"
+                                                                mwlConfirmationPopover
+                                                                [popoverTitle]="popoverTitle"
+                                                                [popoverMessage]="popoverMessage"
+                                                                [confirmText]="confirmText"
+                                                                [cancelText]="cancelText"
+                                                                placement="top"
+                                                                (confirm)="getSwitcherDepost(isSwitchedDepost)" 
+                                                                (cancel)="getCancelDepost(isSwitchedDepost)">
                                                             <label class="custom-control-label"
                                                                 for="customSwitch2">Depósito
                                                                 Temporal</label>
@@ -170,7 +194,18 @@
                                                     <div class="form-group">
                                                         <div class="custom-control custom-switch">
                                                             <input class="custom-control-input" type="checkbox"
-                                                                id="customSwitch3" (change)="getSwitcherOrder(isSwitchedOrder)">
+                                                                id="customSwitch3" 
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                [(ngModel)]="checkIdOrder"
+                                                                [disabled]="isReadonlyOrder"
+                                                                mwlConfirmationPopover
+                                                                [popoverTitle]="popoverTitle"
+                                                                [popoverMessage]="popoverMessage"
+                                                                [confirmText]="confirmText"
+                                                                [cancelText]="cancelText"
+                                                                placement="top"
+                                                                (confirm)="getSwitcherOrder(isSwitchedOrder)"
+                                                                (cancel)="getCancelOrder(isSwitchedOrder)">
                                                             <label class="custom-control-label"
                                                                 for="customSwitch3">Orden de
                                                                 Salida</label>

@@ -31,7 +31,7 @@ export class OrderComponent implements OnInit {
     });
   }
 
-  sendMail(){
+  sendMailTo(){
     this.email = {
         name: 'Angel',
         email: 'aggc9982@gmail.com'

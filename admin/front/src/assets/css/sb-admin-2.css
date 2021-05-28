@@ -297,6 +297,10 @@ input[type="checkbox"] {
   padding: 0;
 }
 
+input[type="checkbox"][readonly] {
+  pointer-events: none;
+}
+
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
