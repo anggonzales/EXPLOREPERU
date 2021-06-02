@@ -110,7 +110,7 @@ export class ProductComponent implements OnInit {
 
   onSelect(event) {
     this.files.push(...event.addedFiles);
-      console.log(event);
+    console.log(event);
   }
 
   onRemove(event) {

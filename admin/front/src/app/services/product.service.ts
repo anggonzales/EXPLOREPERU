@@ -59,8 +59,20 @@ export class ProductService {
   /** Registrar la imagen principal y la galería de imagenes del producto */
   uploadImageProduct(product: Product, image: FileI, gallery: Array<any>) {
 
+    var filePath = `images/${image.name}/${'main'}_${new Date().getTime()}`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, image);
+    task.snapshotChanges()
+      .pipe(
+        finalize(() => {
+          fileRef.getDownloadURL().subscribe(urlImage => {
+            this.downloadURL = urlImage;
+          });
+        })
+      ).subscribe();
+
     for (let i = 0; i < gallery.length; i++) {
-      var filePath2 = `images/${gallery[i].name}`;
+      var filePath2 = `images/${gallery[i].name}/${'gallery'}_${new Date().getTime()}`;
       const fileRef2 = this.storage.ref(filePath2);
       const task2 = this.storage.upload(filePath2, gallery[i]);
       task2.snapshotChanges()
@@ -69,22 +81,12 @@ export class ProductService {
             fileRef2.getDownloadURL().subscribe(urlImage2 => {
               this.downloadURLGallery = urlImage2
               this.galleryList.push(this.downloadURLGallery);
+              console.log(this.downloadURLGallery);
+              console.log(this.galleryList);
+              this.createProduct(product);
             });
           })
         ).subscribe();
     }
-
-    var filePath = `images/${image.name}`;
-    const fileRef = this.storage.ref(filePath);
-    const task = this.storage.upload(filePath, image);
-    task.snapshotChanges()
-      .pipe(
-        finalize(() => {
-          fileRef.getDownloadURL().subscribe(urlImage => {
-            this.downloadURL = urlImage;
-            this.createProduct(product);
-          });
-        })
-      ).subscribe();
   }
 }

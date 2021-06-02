@@ -1,7 +1,9 @@
 export class Message{
+    id?: string;
     from?: string;
     to?: string;
     messageText?: string;
     translatedMessage?: string;
-    viewed?: string;
+    viewed?: boolean;
+    createAt?: any;
 }

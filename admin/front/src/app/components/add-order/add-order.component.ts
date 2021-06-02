@@ -106,6 +106,7 @@ export class AddOrderComponent implements OnInit {
     }
 
     this.orderService.updateOrder(id, order).then(() => {
+      this.sendMailDAM();
       this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
         positionClass: 'toast-bottom-right'
       });
@@ -117,6 +118,7 @@ export class AddOrderComponent implements OnInit {
       stateDepostTemporary: this.isSwitchedDepost
     }
     this.orderService.updateOrder(id, order).then(() => {
+      this.sendMailDAM();
       this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
         positionClass: 'toast-bottom-right'
       });
@@ -128,6 +130,7 @@ export class AddOrderComponent implements OnInit {
       stateOrder: this.isSwitchedOrder
     }
     this.orderService.updateOrder(id, order).then(() => {
+      this.sendMailDAM();
       this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
         positionClass: 'toast-bottom-right'
       });
@@ -190,14 +193,14 @@ export class AddOrderComponent implements OnInit {
 
 
   sendMailDAM() {
-    const email = {
+    var emailData = {
       name: 'Angel',
       email: 'info@gmail.com'
     }
-    this.orderService.sendEmail(email).subscribe(data => {
-      console.log(email);
+    
+    this.orderService.sendEmail(emailData).subscribe(data => {
+      console.log(JSON.parse(JSON.stringify(emailData)));
       let msg = data['message']
-      alert(msg);
       console.log(data, "success");
     }, error => {
       console.error(error, "error");

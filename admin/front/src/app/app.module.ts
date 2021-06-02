@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule} from "@angular/common/http";
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 //Módulos varios
 import { NgxDropzoneModule } from 'ngx-dropzone';
@@ -59,6 +58,7 @@ const config = {
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     FormsModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
@@ -73,8 +73,6 @@ const config = {
       confirmButtonType: 'danger',
     }),
     BrowserAnimationsModule,
-    HttpClientModule,
-    HttpClientTestingModule,
     ReactiveFormsModule
   ],
   providers: [],

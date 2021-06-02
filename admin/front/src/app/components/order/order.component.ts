@@ -31,20 +31,6 @@ export class OrderComponent implements OnInit {
     });
   }
 
-  sendMailTo(){
-    this.email = {
-        name: 'Angel',
-        email: 'aggc9982@gmail.com'
-    }
-
-    this.orderService.sendEmail(this.email).subscribe(data => {
-      let msg = data['message']
-      console.log(msg);
-    }, error => {
-      console.error(error, "error");
-    });
-  }
-
   value: number = 0;
   options: Options = {
     floor: 0,

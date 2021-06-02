@@ -24,8 +24,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-              "src/assets/vendor/datatables/dataTables.bootstrap4.min.css"
+              "src/styles.css"
             ],
             "scripts": []
           },

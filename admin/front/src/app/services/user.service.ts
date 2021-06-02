@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { User } from '../models/user';
+import { UserTest } from '../models/userTest';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +12,32 @@ import { User } from '../models/user';
 export class UserService {
   userData: any;
 
-  constructor(private auth: AngularFireAuth, private firestore: AngularFirestore, ) {
+  private databaseFirebase = '/userTest';
+  userReference: AngularFirestoreCollection<UserTest>;
+
+  private user: Observable<UserTest[]>;
+
+  constructor(private auth: AngularFireAuth, private firestore: AngularFirestore) {
+    this.userReference = firestore.collection(this.databaseFirebase)
     this.getStateAuth();
+  }
+
+  getUsers(): Observable<any> {
+    return this.userReference.snapshotChanges();
+  }
+
+  getUser(id: string): Observable<any> {
+    this.userReference = this.firestore.collection('userTest', ref => ref
+      .where('id', "==", id));
+    return this.userReference.snapshotChanges()
+      .pipe(map(changes => {
+        return changes.map(action => {
+          const data = action.payload.doc.data();
+          data.id = action.payload.doc.id;
+          //console.log(data);
+          return data;
+        });
+      }));
   }
 
   signIn(email, password) {
@@ -21,11 +48,20 @@ export class UserService {
   }
 
   public getUserLocalStorage(): any[] {
-    let userSignIn =  JSON.parse(localStorage.getItem('user'));
-    if(userSignIn === null) {
+    let userSignIn = JSON.parse(localStorage.getItem('user'));
+
+    if (userSignIn === null) {
       userSignIn = [];
     }
     return userSignIn;
+  }
+
+  getIdentity() {
+    let identity = JSON.parse(localStorage.getItem('uid'));
+    if (identity === null) {
+      identity = [];
+    }
+    return identity;
   }
 
   getStateAuth() {
@@ -42,7 +78,7 @@ export class UserService {
       }
     });
   }
-  
+
 
   SetUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.firestore.doc(`users/${user.uid}`);

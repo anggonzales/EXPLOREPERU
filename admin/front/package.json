@@ -27,6 +27,7 @@
     "detect-passive-events": "^2.0.3",
     "firebase": "^8.4.2",
     "jquery": "^3.6.0",
+    "microsoft-translate": "0.0.8",
     "ng5-slider": "^1.2.6",
     "ngx-dropzone": "^3.0.0",
     "ngx-summernote": "^0.8.4",

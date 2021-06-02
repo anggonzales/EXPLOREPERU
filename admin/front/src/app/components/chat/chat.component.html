@@ -1,13 +1,138 @@
 <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebarchat">
+        <div class="tab-content h-100" role="tablist">
+            <div class="tab-pane fade h-100" id="tab-content-create-chat" role="tabpanel">
+                <div class="d-flex flex-column h-100">
+
+                </div>
+            </div>
+
+            <div class="tab-pane fade h-100" id="tab-content-friends" role="tabpanel">
+                <div class="d-flex flex-column h-100">
+
+                    <div class="hide-scrollbar">
+                        <div class="container-fluid py-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade h-100 show active" id="tab-content-dialogs" role="tabpanel">
+                <div class="d-flex flex-column h-100">
+
+                    <div class="hide-scrollbar">
+                        <div class="container-fluid py-6">
+
+                            <!-- Title -->
+                            <h4 class="font-bold mb-6">Clientes</h4>
+                            <!-- Title -->
+
+                            <!-- Chats -->
+                            <nav class="nav d-block list-discussions-js mb-n6">
+                                <!-- Chat link -->
+                                <!-- Chat link -->
+                                <ng-container *ngFor="let item of users">
+                                    <a class="text-reset nav-link p-0 mb-6" (click)="listMessageUser(item.id)">
+                                        <div class="card card-active-listener">
+                                            <div class="card-body">
+
+                                                <div class="media">
+
+                                                    <div class="avatar avatar-online mr-5">
+                                                        <img class="avatar-img"
+                                                            src="../../../assets/images/users_chat.png"
+                                                            alt="Anna Bridges">
+                                                    </div>
+
+
+                                                    <div class="media-body overflow-hidden">
+                                                        <div class="d-flex align-items-center mb-1">
+                                                            <h6 class="text-truncate mb-0 mr-auto">{{item.name}}</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </ng-container>
+                                <!-- Chat link -->
+                            </nav>
+                            <!-- Chats -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="tab-pane fade h-100" id="tab-content-demos" role="tabpanel">
+                <div class="d-flex flex-column h-100">
+
+                    <div class="hide-scrollbar">
+                        <div class="container-fluid py-6">
+
+                            <!-- Card -->
+                            <div class="card mb-6">
+                                <div class="card-body">
+
+                                    <div class="media align-items-center">
+                                        <div class="mr-5">
+                                            <img src="../../../assets/images/users_chat.png" class="fill-primary"
+                                                data-inject-svg="" alt="" style="height: 46px; width: 46px;">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sidebar -->
+
     <!-- Main Content -->
     <div class="main main-visible" data-mobile-height="">
-
-        <ng-container>
+        <ng-container *ngIf="userSelect">
             <!-- Chat -->
             <div id="chat-2" class="chat dropzone-form-js">
 
                 <!-- Chat: body -->
                 <div class="chat-body">
+
+                    <!-- Chat: Header -->
+                    <div class="chat-header border-bottom py-4 py-lg-6 px-lg-8">
+                        <div class="container-xxl">
+
+                            <div class="row align-items-center">
+                                <!-- Close chat(mobile) -->
+                                <div class="col-3 d-xl-none">
+                                    <ul class="list-inline mb-0">
+                                        <li class="list-inline-item">
+                                            <a class="text-muted px-0" href="#" data-chat="open">
+                                                <i class="icon-md fe-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Chat photo -->
+                                <div class="col-6 col-xl-6">
+                                    <div class="media text-center text-xl-left">
+                                        <div class="avatar avatar-sm d-none d-lg-inline-block mr-5">
+                                            <img src="../../../assets/images/users_chat.png" class="avatar-img" alt="">
+                                        </div>
+
+                                        <div class="media-body align-self-center text-truncate">
+                                            <h6 class="text-truncate mb-n1">{{userSelect.name}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .row -->
+                        </div>
+                    </div>
+                    <!-- Chat: Header -->
 
                     <!-- Chat: Content-->
                     <div class="chat-content px-lg-8" #scrollMe>
@@ -31,11 +156,11 @@
 
                                                 <!-- Message: content -->
                                                 <div class="message-content bg-light">
-                                                    <h6 class="mb-2"></h6>
-                                                    <div>{{message.messageText}}</div>                                                  
+                                                    <h6 class="mb-2">{{userSelect.name}}</h6>
+                                                    <div>{{message.messageText}}</div>
                                                     <div>{{message.translatedMessage}}</div>
                                                     <div class="mt-1">
-                                                        <small class="opacity-65"></small>
+                                                        <small class="opacity-65">{{message.createAt}}</small>
                                                     </div>
                                                 </div>
 
@@ -49,7 +174,7 @@
                                 <!-- Message -->
 
                                 <!-- Message -->
-                                <div class="message message-right">
+                                <div class="message message-right" *ngIf="de === message.from">
                                     <!-- Avatar -->
                                     <div class="avatar avatar-sm ml-4 ml-lg-5 d-none d-lg-block">
                                         <img class="avatar-img" src="../../../assets/images/users_chat.png" alt="">
@@ -82,8 +207,6 @@
                                 <!-- Message -->
                             </ng-container>
 
-
-
                             <!-- Divider -->
                             <!-- <div class="message-divider my-9 mx-lg-5">
                                 <div class="row align-items-center">
@@ -102,7 +225,6 @@
                                 </div>
                             </div> -->
                             <!-- Divider -->
-
 
                         </div>
 
@@ -124,12 +246,9 @@
                                             <!-- Textarea -->
                                             <textarea id="chat-id-2-input" class="form-control bg-transparent border-0"
                                                 placeholder="Escribe tu mensaje" rows="1" data-emoji-input=""
-                                                data-autosize="true" #messageText="ngModel" name="messageText" [(ngModel)]="message.messageText" required></textarea>
-
+                                                data-autosize="true" #messageText="ngModel" name="messageText" [(ngModel)]="message.messageText"></textarea>
                                             <!-- Emoji button -->
-
                                         </div>
-
                                     </div>
 
                                     <!-- Submit button -->
@@ -138,9 +257,7 @@
                                             <span><i class="fas fa-paper-plane"></i></span>
                                         </button>
                                     </div>
-
                                 </div>
-
                             </form>
 
                         </div>
@@ -148,13 +265,10 @@
                     <!-- Chat: Footer -->
                 </div>
                 <!-- Chat: body -->
-
             </div>
             <!-- Chat -->
         </ng-container>
-
     </div>
+    <!-- Main Content -->
 </div>
-
-
-<!-- Main Content -->
+<!-- Layout -->
