@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SubcategoryService } from 'src/app/services/subcategory.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { map } from 'rxjs/operators';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-product',
@@ -29,14 +30,18 @@ export class ProductComponent implements OnInit {
   subcategories: any[] = [];
   selectedImage: any = null;
   imgSrc: string;
+  userSellerId: any = {};
 
 
   constructor(private productService: ProductService, private categoryService: CategoryService, private subcategoryService: SubcategoryService, private storage: AngularFireStorage, private toastr: ToastrService,
-    private router: Router, private fb: FormBuilder) { }
+    private router: Router, private fb: FormBuilder, private userService: UserService) {
+      this.userSellerId = this.userService.getIdentity();
+     }
 
   ngOnInit(): void {
     this.getCategories();
-    this.getProducts();
+    //this.getProducts();
+    this.getProductsFilter();
   }
 
   getProducts() {
@@ -49,6 +54,16 @@ export class ProductComponent implements OnInit {
       this.products = data;
     });
   }
+
+  getProductsFilter() {
+    this.productService.getProductsFilter(this.userSellerId).subscribe(data => {
+      this.products = [];
+      for (const i in data) {
+        this.products.push(data[i]);
+      }
+    });
+  }
+
 
   getCategories(): void {
     this.categoryService.getCategories().subscribe(data => {

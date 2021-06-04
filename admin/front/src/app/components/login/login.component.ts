@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
 import { User } from 'src/app/models/user';
 
 @Component({
@@ -16,7 +17,7 @@ export class LoginComponent implements OnInit {
   localStorageId: string;
   userData: any;
 
-  constructor(private auth: AngularFireAuth, private firestore: AngularFirestore) {
+  constructor(private auth: AngularFireAuth, private firestore: AngularFirestore, private router: Router,) {
     this.auth.authState.subscribe(user => {
       if (user) {
         this.userData = user;
@@ -39,6 +40,7 @@ export class LoginComponent implements OnInit {
     console.log(this.email);
     this.auth.signInWithEmailAndPassword(this.email, this.password).then((res) => {
       this.SetUserData(res.user);
+      this.router.navigate(['productlist']);
     });
   }
 

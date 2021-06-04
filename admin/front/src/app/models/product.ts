@@ -1,6 +1,6 @@
 export class Product{
         name?: string;
-        store?: string;
+        userSellerId?: string;
         description?: string;
         price?: string;
         image?: any;

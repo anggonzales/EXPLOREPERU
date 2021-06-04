@@ -4,8 +4,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
-var handlebars = require('handlebars');
-var fs = require('fs');
+
 
 /** Código fuente extraído de Nodemailer y GitHub
  *  Url= https://nodemailer.com/smtp/

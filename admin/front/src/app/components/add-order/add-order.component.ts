@@ -12,6 +12,13 @@ import { OrderService } from 'src/app/services/order.service';
 })
 export class AddOrderComponent implements OnInit {
 
+  value: number;
+  options: Options = {
+    floor: 0,
+    ceil: 100,
+    step: 1,
+  };
+
   /* Código para la configuración de popover confirmation */
   placements = ['top', 'left', 'right', 'bottom'];
   popoverTitle = 'Mensaje de confirmación';
@@ -36,6 +43,7 @@ export class AddOrderComponent implements OnInit {
 
   production: any;
   stateProduction: any;
+  stateSlider: number
   submitted = false;
   email: any[] = [];
   id: string | null;
@@ -43,6 +51,8 @@ export class AddOrderComponent implements OnInit {
   @Input() checkIdDAM: boolean;
   @Input() checkIdDepostTemporary: boolean;
   @Input() checkIdOrder: boolean;
+
+
 
   constructor(private orderService: OrderService,
     private formBuilder: FormBuilder,
@@ -71,11 +81,11 @@ export class AddOrderComponent implements OnInit {
     this.isReadonlyDAM = true;
   }
 
+
   getAdvance(value: number): void {
     this.production = `${value}`;
     console.log(this.production);
   }
-
 
   updateOrder() {
     this.submitted = true;
@@ -85,6 +95,7 @@ export class AddOrderComponent implements OnInit {
 
     if (this.id !== null) {
       this.editOrder(this.id);
+      this.sendMailDAM();
     }
   }
 
@@ -137,7 +148,7 @@ export class AddOrderComponent implements OnInit {
     });
   }
 
-
+  /* https://angular-slider.github.io/ngx-slider/demos */
 
   getOrder() {
     if (this.id !== null) {
@@ -147,7 +158,17 @@ export class AddOrderComponent implements OnInit {
         this.checkDepostTemporary = data.payload.data()['stateDepostTemporary'];
         this.checkOrder = data.payload.data()['stateOrder'];
 
-        if(this.checkDAM === true){
+        this.stateSlider = data.payload.data()['stateProduction'];
+
+        this.options = {
+          floor: 0,
+          ceil: 100,
+          step: 1,
+          minLimit: this.stateSlider,
+          maxLimit: 100
+        }
+
+        if (this.checkDAM === true) {
           console.log(this.checkDAM);
           this.checkIdDAM = true;
           this.isReadonlyDAM = true;
@@ -156,7 +177,7 @@ export class AddOrderComponent implements OnInit {
           this.isReadonlyDAM = false;
         }
 
-        if(this.checkDepostTemporary === true){
+        if (this.checkDepostTemporary === true) {
           console.log(this.checkDepostTemporary);
           this.checkIdDepostTemporary = true;
           this.isReadonlyDepostTemporary = true;
@@ -165,7 +186,7 @@ export class AddOrderComponent implements OnInit {
           this.isReadonlyDepostTemporary = false;
         }
 
-        if(this.checkOrder === true){
+        if (this.checkOrder === true) {
           console.log(this.checkOrder);
           this.checkIdOrder = true;
           this.isReadonlyOrder = true;
@@ -197,7 +218,7 @@ export class AddOrderComponent implements OnInit {
       name: 'Angel',
       email: 'info@gmail.com'
     }
-    
+
     this.orderService.sendEmail(emailData).subscribe(data => {
       console.log(JSON.parse(JSON.stringify(emailData)));
       let msg = data['message']
@@ -223,7 +244,7 @@ export class AddOrderComponent implements OnInit {
     else {
 
     }
-  }  
+  }
 
   getSwitcherDepost(onoffswicth) {
     this.isSwitchedDepost = !this.isSwitchedDepost;
@@ -259,9 +280,12 @@ export class AddOrderComponent implements OnInit {
     this.checkIdDepostTemporary = false;
   }
 
-  value: number = 10;
+  /*value: number = 10;
   options: Options = {
     floor: 0,
-    ceil: 100
-  };
+    ceil: 100,
+    minLimit: 10,
+  };*/
+
+
 }

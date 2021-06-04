@@ -37,8 +37,6 @@
                     <a class="collapse-item" routerLink="/productlist">Productos</a>
                     <a class="collapse-item" routerLink="/quotelist">Cotizaciones</a>
                     <a routerLink="/orderlist" class="collapse-item">Ordenes</a>
-                    <a href="" class="collapse-item">Mensajes</a>
-                    <a href="" class="collapse-item">Reportes</a>
                 </div>
             </div>
         </li>
@@ -212,7 +210,6 @@
                                     <tr>
                                         <th>Nro</th>
                                         <th>Nombre</th>
-                                        <th>Imagen</th>
                                         <th>Categoría</th>
                                         <th>Precio</th>
                                         <th>Operaciones</th>
@@ -222,7 +219,6 @@
                                     <tr *ngFor="let product of products; index as i">
                                         <td>{{ i + 1 }}</td>
                                         <td>{{ product.name }}</td>
-                                        <td></td>
                                         <td>{{ product.category }}</td>
                                         <td>{{ product.price }}</td>
                                         <td>

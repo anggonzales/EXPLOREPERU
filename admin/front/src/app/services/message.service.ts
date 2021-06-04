@@ -30,7 +30,8 @@ export class MessageService {
   getMessagesFilter(from, to): Observable<any> {
     this.messageReference = this.firestore.collection('messages', ref => ref
     .where('from', "==", from)
-    .where('to', "==", to));
+    .where('to', "==", to)
+    .orderBy('createAt', 'asc'));
     return this.messages = this.messageReference.snapshotChanges()
       .pipe(map(changes => {
         return changes.map(action => {

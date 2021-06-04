@@ -42,7 +42,7 @@ export class UserService {
 
   signIn(email, password) {
     return this.auth.signInWithEmailAndPassword(email, password).then((res) => {
-      this.SetUserData(res.user);
+      this.setUserData(res.user);
     });
 
   }
@@ -80,7 +80,7 @@ export class UserService {
   }
 
 
-  SetUserData(user) {
+  setUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.firestore.doc(`users/${user.uid}`);
     const userData: User = {
       uid: user.uid,

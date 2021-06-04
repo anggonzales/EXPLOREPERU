@@ -7,7 +7,7 @@ import { Email } from '../models/email.interface';
 
 import { OrderService } from './order.service';
 
-xdescribe('Order Service', () => {
+describe('Order Service', () => {
   let service: OrderService;
   let httpMock: HttpTestingController;
 
@@ -29,10 +29,6 @@ xdescribe('Order Service', () => {
     httpMock = TestBed.inject(HttpTestingController);
   })
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('sendEmail return a request', () => {
     let email = {
       name: 'Angel',
@@ -42,7 +38,12 @@ xdescribe('Order Service', () => {
       expect(resp).not.toBeNull();
     });
     
-    const req = httpMock.expectOne('http://localhost:3001/sendFormData');
+    const req = httpMock.expectOne('http://localhost:3000/sendFormData');
     expect(req.request.method).toBe('POST');
   });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 });
+
