@@ -4,6 +4,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
+const handlebars = require('handlebars');
+const fs = require('fs');
 
 
 /** Código fuente extraído de Nodemailer y GitHub
@@ -19,19 +21,19 @@ app.use(function (req, res, next) {
   next();
 });
 
-/** Código fuente extraído de Nodemailer y GitHub
+/** Código fuente de Stackoverflow
  *  Url= https://stackoverflow.com/questions/39489229/pass-variable-to-html-template-in-nodemailer/39489955#39489955
 */
 
-var readHTMLFile = function(path, callback) {
-  fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-      if (err) {
-          throw err;
-          callback(err);
-      }
-      else {
-          callback(null, html);
-      }
+var readHTMLFile = function (path, callback) {
+  fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
+    if (err) {
+      throw err;
+      callback(err);
+    }
+    else {
+      callback(null, html);
+    }
   });
 };
 
@@ -49,24 +51,30 @@ app.post('/sendFormData', (req, res) => {
     }
   });
 
-  var mailOptions = {
-    from: 'aggc@gmail.com',
-    to: 'info@info.com',
-    subject: "Information about the process of your order",
-    html: { path: "public/index.html"}
-  };
+  readHTMLFile('public/index.html', function (err, html) {
+    let template = handlebars.compile(html);
+    let htmlToSend = template(req);
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      res.status(500).send(error.message);
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-      res.status(200).json({
-        message: 'successfuly sent!'
-      })
-    }
-  });
+    var mailOptions = {
+      from: 'aggc@gmail.com',
+      to: 'info@info.com',
+      subject: "Information about the process of your order",
+      html: htmlToSend
+
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        res.status(500).send(error.message);
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.status(200).json({
+          message: 'successfuly sent!'
+        })
+      }
+    });
+  })
 });
 
 app.listen(3000, () => {

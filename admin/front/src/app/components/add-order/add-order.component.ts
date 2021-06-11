@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -103,7 +104,6 @@ export class AddOrderComponent implements OnInit {
     const order: any = {
       stateProduction: this.production
     }
-
     this.orderService.updateOrder(id, order).then(() => {
       this.toastr.info('El avance de producción fue modificado con éxito', 'Estado de producción', {
         positionClass: 'toast-bottom-right'
@@ -214,9 +214,13 @@ export class AddOrderComponent implements OnInit {
 
 
   sendMailDAM() {
+    let date = Date.now();
     var emailData = {
+      pedidoId: this.id,
       name: 'Angel',
-      email: 'info@gmail.com'
+      message: 'El porcentaje de avance de su pedido es del '+ this.production + '%',
+      email: 'info@gmail.com',
+      createAt: '',
     }
 
     this.orderService.sendEmail(emailData).subscribe(data => {
