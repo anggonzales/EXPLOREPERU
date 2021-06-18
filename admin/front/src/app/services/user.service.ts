@@ -34,7 +34,6 @@ export class UserService {
         return changes.map(action => {
           const data = action.payload.doc.data();
           data.id = action.payload.doc.id;
-          //console.log(data);
           return data;
         });
       }));

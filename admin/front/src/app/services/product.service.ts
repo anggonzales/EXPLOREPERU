@@ -6,6 +6,7 @@ import { FileI } from '../models/file.interface';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { finalize, map } from 'rxjs/operators';
 import { UserService } from './user.service';
+import { isNgTemplate } from '@angular/compiler';
 
 
 
@@ -56,6 +57,15 @@ export class ProductService {
     return this.firestore.collection('products').doc(id).snapshotChanges();
   }
 
+  getProductNow(id: string): Observable<any> {
+    return this.firestore.collection<any>('products').doc(id).snapshotChanges()
+    .pipe(
+      map(data => {
+        return { id: data.payload.id, ...data.payload.data()};
+      })
+    );
+  }
+
   getProducts(): Observable<any> {
     return this.productReference.snapshotChanges();
   }
@@ -66,6 +76,7 @@ export class ProductService {
     .pipe(map(changes => {
       return changes.map(action => {
         const data = action.payload.doc.data() as Product;
+        data['id'] = action.payload.doc.id;
         return data;
       });
     }));
@@ -103,7 +114,5 @@ export class ProductService {
           });
         })
       ).subscribe();
-
-    
   }
 }

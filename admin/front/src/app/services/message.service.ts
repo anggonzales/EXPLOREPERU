@@ -27,7 +27,7 @@ export class MessageService {
     return this.messageReference.snapshotChanges();
   }
 
-  getMessagesFilter(from, to): Observable<any> {
+  getMessagesFilter(to, from): Observable<any> {
     this.messageReference = this.firestore.collection('messages', ref => ref
     .where('from', "==", from)
     .where('to', "==", to)
@@ -37,6 +37,22 @@ export class MessageService {
         return changes.map(action => {
           const data = action.payload.doc.data() as Message;
           data.id = action.payload.doc.id;
+          //console.log(data);
+          return data;
+        });
+      }));
+  }
+
+  getMessagesFilterUserBuyer(from, to): Observable<any> {
+    this.messageReference = this.firestore.collection('messages', ref => ref
+    .where('from', "==", from)
+    .where('to', "==", to));
+    return this.messages = this.messageReference.snapshotChanges()
+      .pipe(map(changes => {
+        return changes.map(action => {
+          const data = action.payload.doc.data() as Message;
+          data.id = action.payload.doc.id;
+          console.log(data);
           return data;
         });
       }));

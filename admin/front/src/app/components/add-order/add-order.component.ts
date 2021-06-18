@@ -107,7 +107,7 @@ export class AddOrderComponent implements OnInit {
     this.orderService.updateOrder(id, order).then(() => {
       this.toastr.info('El avance de producción fue modificado con éxito', 'Estado de producción', {
         positionClass: 'toast-bottom-right'
-      })
+      });
     })
   }
 

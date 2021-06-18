@@ -1,24 +1,21 @@
-import { Component, OnInit, Input, NgZone, ViewChild, OnDestroy } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
-import { ProductService } from 'src/app/services/product.service';
-import { Product } from 'src/app/models/Product';
-import { CategoryService } from 'src/app/services/category.service';
+import { Component, OnInit } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { SubcategoryService } from 'src/app/services/subcategory.service';
-import { AngularFireStorage } from '@angular/fire/storage';
-import { map } from 'rxjs/operators';
-import { UserService } from 'src/app/services/user.service';
 import { Subject } from 'rxjs';
+import { Product } from 'src/app/models/Product';
+import { CategoryService } from 'src/app/services/category.service';
+import { ProductService } from 'src/app/services/product.service';
+import { SubcategoryService } from 'src/app/services/subcategory.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
-  selector: 'app-product',
-  templateUrl: './product.component.html',
-  styleUrls: ['./product.component.css']
+  selector: 'app-add-product',
+  templateUrl: './add-product.component.html',
+  styleUrls: ['./add-product.component.css']
 })
-export class ProductComponent implements OnDestroy, OnInit {
-
-  @ViewChild('closebutton') closebutton;
+export class AddProductComponent implements OnInit {
 
   private image: any;
   private imageGallery: any;
@@ -32,51 +29,20 @@ export class ProductComponent implements OnDestroy, OnInit {
   selectedImage: any = null;
   imgSrc: string;
   userSellerId: any = {};
+
+
+  //Datatable
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
-
+  
   constructor(private productService: ProductService, private categoryService: CategoryService, private subcategoryService: SubcategoryService, private storage: AngularFireStorage, private toastr: ToastrService,
     private router: Router, private fb: FormBuilder, private userService: UserService) {
     this.userSellerId = this.userService.getIdentity();
   }
 
-
   ngOnInit(): void {
-    this.getCategories();
-    //this.getProducts();
-    this.getProductsFilter();
   }
-
-  getProducts() {
-    this.productService.getProducts().pipe(
-      map(changes => changes.map(c => ({
-        id: c.payload.doc.id, ...c.payload.doc.data()
-      })))
-    ).subscribe(data => {
-      this.products = data;
-      this.dtTrigger.next();
-    });
-  }
-
-  getProductsFilter() {
-    this.productService.getProductsFilter(this.userSellerId).subscribe(data => {
-      //this.products = [];
-      this.products =  data;
-      this.dtTrigger.next();
-    });
-  }
-
-  /*getProductsFilter() {
-    this.productService.getProductsFilter(this.userSellerId).subscribe(data => {
-      this.products = [];
-      for (const i in data) {
-        this.products.push(data[i]);
-      }
-      this.dtTrigger.next();
-    });
-  }*/
-
 
   getCategories(): void {
     this.categoryService.getCategories().subscribe(data => {
@@ -100,7 +66,6 @@ export class ProductComponent implements OnDestroy, OnInit {
     });
   }
 
-
   saveProduct(): void {
     this.productService.createProductImage(this.product, this.image, this.files);
     this.toastr.success('El producto se ha agregado correctamente', 'Producto registrado', {
@@ -108,13 +73,11 @@ export class ProductComponent implements OnDestroy, OnInit {
     });
     console.log('Se ha ingresado satisfactoriamente');
     this.submitted = true;
-    this.closebutton.nativeElement.click();
   }
 
   newProduct(): void {
     this.submitted = true;
   }
-
 
   /* Funciones para el manejo de la galería de imagenes*/
   showPreview(event: any) {
@@ -150,8 +113,4 @@ export class ProductComponent implements OnDestroy, OnInit {
     console.log(this.image);
   }
 
-  //DataTable
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-  }
 }

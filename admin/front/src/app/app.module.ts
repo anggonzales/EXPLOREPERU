@@ -13,6 +13,7 @@ import { ToastrModule, ToastContainerModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DataTablesModule } from 'angular-datatables';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
+import { NgxSummernoteModule } from 'ngx-summernote';
 
 //Módulos Firebase
 import { AngularFireModule } from '@angular/fire';
@@ -30,6 +31,8 @@ import { FooterComponent } from './modules/footer/footer.component';
 import { SidebarComponent } from './modules/sidebar/sidebar.component';
 import { AddOrderComponent } from './components/add-order/add-order.component';
 import { LoginComponent } from './components/login/login.component';
+import { QuotationListComponent } from './components/quotation-list/quotation-list.component';
+import { AddProductComponent } from './components/add-product/add-product.component';
 
 const config = {
   apiKey: "AIzaSyBGQ5lU2iwjN35W2QkcAJoI4YJ3t4PSbcY",
@@ -54,7 +57,9 @@ const config = {
     FooterComponent,
     SidebarComponent,
     AddOrderComponent,
-    LoginComponent
+    LoginComponent,
+    QuotationListComponent,
+    AddProductComponent
   ],
   imports: [
     BrowserModule,
@@ -68,6 +73,7 @@ const config = {
     DataTablesModule,
     AngularFireStorageModule,
     NgxDropzoneModule,
+    NgxSummernoteModule,
     ToastrModule.forRoot(),
     ConfirmationPopoverModule.forRoot({
       confirmButtonType: 'danger',

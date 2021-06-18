@@ -15,33 +15,34 @@
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Órdenes</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">COTIZACIONES</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table datatable class='table table-bordered' id="datatable" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" width='100%' cellspacing='0'>
+                            <table datatable class='table table-bordered' [dtOptions]="datatableOptions"
+                                [dtTrigger]="datatableTrigger" width='100%' cellspacing='0'>
                                 <thead>
                                     <tr>
-                                        <th>Nro</th>
-                                        <th>Cliente</th>
+                                        <th>#</th>
                                         <th>Producto</th>
-                                        <th>Precio</th>
-                                        <th>Estado</th>
+                                        <th>Cliente</th>
+                                        <th>Destino</th>
                                         <th>Fecha</th>
+                                        <th>Estado</th>
                                         <th>Operaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let order of orders; index as i">
+                                    <tr *ngFor="let quotation of quotations; index as i">
                                         <td>{{ i + 1 }}</td>
                                         <td></td>
-                                        <td>{{ order.nameProduct }}</td>
-                                        <td>{{ order.priceProduct }}</td>
                                         <td></td>
-                                        <td>{{ order.shippingDate }}</td>
+                                        <td>{{ quotation.destiny }}</td>
+                                        <td>{{ quotation.applicationDate }}</td>
+                                        <td>{{ quotation.status }}</td>
                                         <td>
-                                            <a [routerLink]="['/editorder/', order.id]" class="btn btn-warning mr-3"><i
-                                                    class="fa fa-edit"></i></a>
+                                            <a [routerLink]="['/editquotation/', quotation.id]"
+                                                class="btn btn-warning mr-3"><i class="fa fa-edit"></i></a>
                                             <a routerLink="/chat" class="btn btn-danger mr-3" target="_blank"><i
                                                     class="fa fa-comments"></i></a>
                                         </td>

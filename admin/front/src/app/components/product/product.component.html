@@ -35,20 +35,15 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Opciones</h6>
                     <a class="collapse-item" routerLink="/productlist">Productos</a>
-                    <a class="collapse-item" routerLink="/quotelist">Cotizaciones</a>
-                    <a routerLink="/orderlist" class="collapse-item">Ordenes</a>
+                    <a class="collapse-item" routerLink="/quotationlist">Cotizaciones</a>
+                    <a class="collapse-item" routerLink="/orderlist">Ordenes</a>
                 </div>
             </div>
         </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
-
-        <!-- Sidebar Toggler (Sidebar) -->
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div>
-
+        
     </ul>
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -205,7 +200,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <table datatable class="table table-bordered" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>Nro</th>
@@ -222,8 +217,8 @@
                                         <td>{{ product.category }}</td>
                                         <td>{{ product.price }}</td>
                                         <td>
-                                            <button class="btn btn-success btn-sm"><i
-                                                    class="fa fa-edit"></i></button>
+                                            <a [routerLink]="['/editproduct/', product.id]" class="btn btn-success mr-3"><i
+                                                class="fa fa-edit"></i></a>
                                         </td>
                                     </tr>
                                 </tbody>

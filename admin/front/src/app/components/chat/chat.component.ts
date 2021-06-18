@@ -1,5 +1,5 @@
 import { Message } from 'src/app/models/message';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { MessageService } from 'src/app/services/message.service';
 import { UserService } from 'src/app/services/user.service';
@@ -14,24 +14,27 @@ import { Router } from '@angular/router';
 })
 export class ChatComponent implements OnInit {
 
+  @ViewChild('scrollMe', { static: false }) private myScrollContainer: ElementRef;
+
   message: Message = new Message();
   messages: any[] = [];
   users: any[] = [];
   messageObject: any;
   userSellerId: any = {};
-  userSelect: any = null;
-  from;
+  public userSelect: any = null;
+  public from;
 
 
 
-  constructor(private messageService: MessageService, private userService: UserService, private miDatePipe: DatePipe, private router: Router) {
+  constructor(private messageService: MessageService,
+    private userService: UserService,
+    private miDatePipe: DatePipe) {
+
     this.userSellerId = this.userService.getIdentity();
-    this.from = this.userSellerId.id;
-
+    this.from = this.userService.getIdentity();
   }
 
   ngOnInit(): void {
-    //this.getMessages();
     this.getUsersBuyer();
 
   }
@@ -48,18 +51,29 @@ export class ChatComponent implements OnInit {
   }
 
   listMessageUser(to) {
-    this.messageService.getMessagesFilter(this.userSellerId, to).subscribe(data => {
+    this.messages = [];
+
+    this.messageService.getMessagesFilter(to, this.from).subscribe(data => {
       //console.log(this.userSellerId);
-      this.messages = [];
       for (const i in data) {
         this.messages.push(data[i]);
       }
     });
 
-    this.userService.getUser(to).subscribe(data => {
-      this.userSelect =  JSON.parse(JSON.stringify(data[0]));
-      //console.log(this.userSelect);
+    this.messageService.getMessagesFilterUserBuyer(to, this.from).subscribe(data => {
+      for (const i in data) {
+        this.messages.push(data[i]);
+        console.log(this.messages)
+      }
     });
+
+    this.userService.getUser(to).subscribe(data => {
+      this.userSelect = JSON.parse(JSON.stringify(data[0]));
+      this.userSelect.id = JSON.parse(JSON.stringify(data[0].id));
+      console.log(this.userSelect.id);
+    });
+
+    this.scrollToBottom();
   }
 
   getMessages() {
@@ -75,6 +89,7 @@ export class ChatComponent implements OnInit {
     ).subscribe(data => {
       this.messages = data;
     });
+    this.scrollToBottom();
   }
 
 
@@ -85,18 +100,29 @@ export class ChatComponent implements OnInit {
         from: this.userSellerId,
         to: this.userSelect.id,
         messageText: this.message.messageText,
-        translatedMessage: this.message.translatedMessage,
+        translatedMessage: '',
         viewed: false,
         createAt: this.miDatePipe.transform(date, 'MMM d, y, h:mm:ss a')
       };
     }
 
-    this.messageService.translateText(this.message.messageText, this.userSelect.languageCode).subscribe(
+    this.messageService.sendMessage(this.message);
+
+    /*this.messageService.translateText(this.message.messageText, this.userSelect.languageCode).subscribe(
       res => {
         this.message.translatedMessage = JSON.parse(JSON.stringify(res[0].translations[0].text));
         console.log(this.message.translatedMessage);
         this.messageService.sendMessage(this.message);
         console.log('Se ha ingresado satisfactoriamente el mensaje');
-      })
+      })*/
+
+    this.scrollToBottom();
+    this.message.messageText = "";
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) { }
   }
 }
