@@ -17,11 +17,16 @@ export class OrderService {
     this.orderReference = firestore.collection(this.databaseFirebase);
   }
 
+  createOrder(order:any): Promise<any> {
+    return this.firestore.collection('orders').add(order);
+  }
+
   /* Iniciando conexión con el backend para el envío de correo electrónico  */
   sendEmail(obj): Observable<Email> {
     console.log(obj);
     return this.http.post<Email>('http://localhost:3000/sendFormData', obj)
   }
+
 
   getOrders(): Observable<any> {
     return this.orderReference.snapshotChanges();

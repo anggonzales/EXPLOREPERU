@@ -5,7 +5,7 @@ export class Quotation{
     message?: string;
     messageTranslate?: string;
     price?: string;
-    estimatedAmount?: string;
+    estimateAmount?: string;
     unit?: string;
     paymentTerms?: string;
     destiny?: string;

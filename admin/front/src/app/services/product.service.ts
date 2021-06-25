@@ -6,9 +6,6 @@ import { FileI } from '../models/file.interface';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { finalize, map } from 'rxjs/operators';
 import { UserService } from './user.service';
-import { isNgTemplate } from '@angular/compiler';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +31,7 @@ export class ProductService {
       name: product.name,
       userSellerId: this.userSellerId,
       description: product.description,
+      detail: product.detail,
       price: product.price,
       image: this.downloadURL,
       gallery: this.galleryList,
@@ -49,7 +47,7 @@ export class ProductService {
     this.uploadImageProduct(product, image, gallery);
   }
 
-  updateProduct(id: string, data: any): Promise<void> {
+  updateProduct(id: string, data: any): Promise<any> {
     return this.firestore.collection('products').doc(id).update(data);
   }
 
@@ -57,10 +55,11 @@ export class ProductService {
     return this.firestore.collection('products').doc(id).snapshotChanges();
   }
 
-  getProductNow(id: string): Observable<any> {
+  getProductNow(id: string) {
     return this.firestore.collection<any>('products').doc(id).snapshotChanges()
     .pipe(
       map(data => {
+        console.log(data.payload.data());
         return { id: data.payload.id, ...data.payload.data()};
       })
     );

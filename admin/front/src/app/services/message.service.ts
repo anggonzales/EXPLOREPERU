@@ -30,14 +30,12 @@ export class MessageService {
   getMessagesFilter(to, from): Observable<any> {
     this.messageReference = this.firestore.collection('messages', ref => ref
     .where('from', "==", from)
-    .where('to', "==", to)
-    .orderBy('createAt', 'asc'));
+    .where('to', "==", to));
     return this.messages = this.messageReference.snapshotChanges()
       .pipe(map(changes => {
         return changes.map(action => {
           const data = action.payload.doc.data() as Message;
           data.id = action.payload.doc.id;
-          //console.log(data);
           return data;
         });
       }));
@@ -52,7 +50,6 @@ export class MessageService {
         return changes.map(action => {
           const data = action.payload.doc.data() as Message;
           data.id = action.payload.doc.id;
-          console.log(data);
           return data;
         });
       }));
@@ -62,8 +59,8 @@ export class MessageService {
     const API = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=es&to='+languageCode
 
     let headers = new HttpHeaders ({
-      'Ocp-Apim-Subscription-Key' : 'e6c484090e5e4b1897ae6ce61e44ef26',
-      'Ocp-Apim-Subscription-Region' : 'centralus',
+      'Ocp-Apim-Subscription-Key' : '755fc7928e474253920a593a0f53b32e',
+      'Ocp-Apim-Subscription-Region' : 'global',
       'Content-Type' : 'application/json',
     });
 

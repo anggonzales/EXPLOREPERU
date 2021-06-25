@@ -23,6 +23,7 @@ export class ChatComponent implements OnInit {
   userSellerId: any = {};
   public userSelect: any = null;
   public from;
+  sortedMessages: any = [];
 
 
 
@@ -51,26 +52,38 @@ export class ChatComponent implements OnInit {
   }
 
   listMessageUser(to) {
-    this.messages = [];
-
     this.messageService.getMessagesFilter(to, this.from).subscribe(data => {
-      //console.log(this.userSellerId);
-      for (const i in data) {
-        this.messages.push(data[i]);
-      }
+      this.messages = [];
+      this.messages = data;
+      this.messageService.getMessagesFilterUserBuyer(to, this.from).subscribe(data => {
+        for (const i in data) {
+          this.messages.push(data[i]);
+          //console.log(this.messages)
+          
+        }
+        
+        //this.messages.sort((x,y) => <any> new Date(x.createAt) - <any> new Date(y.createAt));
+        this.messages.sort(function(x, y) {
+          let a =  <any> new Date(x.createAt);
+          let b = <any> new Date(y.createAt);
+          return a - b;
+        });
+        //this.sortedMessages = this.messages.sort((a,b) => a.createAt - b.createAt);
+      });
     });
 
-    this.messageService.getMessagesFilterUserBuyer(to, this.from).subscribe(data => {
-      for (const i in data) {
-        this.messages.push(data[i]);
-        console.log(this.messages)
-      }
-    });
+    /*this.messages.sort(function(x, y) {
+      let a =  <any> new Date(x.createAt);
+      let b = <any> new Date(y.createAt);
+      console.log("Ordenado", a-b);
+      return a - b;
+    });*/
+    
 
     this.userService.getUser(to).subscribe(data => {
       this.userSelect = JSON.parse(JSON.stringify(data[0]));
       this.userSelect.id = JSON.parse(JSON.stringify(data[0].id));
-      console.log(this.userSelect.id);
+      //console.log(this.userSelect.id);
     });
 
     this.scrollToBottom();
@@ -89,7 +102,6 @@ export class ChatComponent implements OnInit {
     ).subscribe(data => {
       this.messages = data;
     });
-    this.scrollToBottom();
   }
 
 
@@ -100,24 +112,23 @@ export class ChatComponent implements OnInit {
         from: this.userSellerId,
         to: this.userSelect.id,
         messageText: this.message.messageText,
-        translatedMessage: '',
+        translatedMessage: this.message.translatedMessage,
         viewed: false,
         createAt: this.miDatePipe.transform(date, 'MMM d, y, h:mm:ss a')
       };
     }
 
-    this.messageService.sendMessage(this.message);
+    //this.messageService.sendMessage(this.message);
 
-    /*this.messageService.translateText(this.message.messageText, this.userSelect.languageCode).subscribe(
+    this.messageService.translateText(this.message.messageText, this.userSelect.languageCode).subscribe(
       res => {
         this.message.translatedMessage = JSON.parse(JSON.stringify(res[0].translations[0].text));
         console.log(this.message.translatedMessage);
         this.messageService.sendMessage(this.message);
         console.log('Se ha ingresado satisfactoriamente el mensaje');
-      })*/
+      });
 
     this.scrollToBottom();
-    this.message.messageText = "";
   }
 
   scrollToBottom(): void {
