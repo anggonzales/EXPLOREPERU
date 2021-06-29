@@ -19,7 +19,8 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table datatable class='table table-bordered' id="datatable" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" width='100%' cellspacing='0'>
+                            <table datatable class='table table-bordered' id="datatable" [dtOptions]="datatableOptions"
+                                [dtTrigger]="datatableTrigger" width='100%' cellspacing='0'>
                                 <thead>
                                     <tr>
                                         <th>Nro</th>
@@ -34,10 +35,10 @@
                                 <tbody>
                                     <tr *ngFor="let order of orders; index as i">
                                         <td>{{ i + 1 }}</td>
-                                        <td></td>
-                                        <td>{{ order.nameProduct }}</td>
+                                        <td>{{ order.userBuyerName }}</td>
+                                        <td>{{ order.productName }}</td>
                                         <td>{{ order.priceProduct }}</td>
-                                        <td></td>
+                                        <td>{{ order.stateStartingOrder }}</td>
                                         <td>{{ order.shippingDate }}</td>
                                         <td>
                                             <a [routerLink]="['/editorder/', order.id]" class="btn btn-warning mr-3"><i

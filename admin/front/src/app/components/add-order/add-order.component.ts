@@ -1,10 +1,13 @@
-import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { INg2LoadingSpinnerConfig } from 'ng2-loading-spinner';
 import { Options } from 'ng5-slider';
 import { ToastrService } from 'ngx-toastr';
 import { OrderService } from 'src/app/services/order.service';
+import { ProductService } from 'src/app/services/product.service';
+import { UserBuyerService } from 'src/app/services/user-buyer.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-add-order',
@@ -29,6 +32,14 @@ export class AddOrderComponent implements OnInit {
   /*------------------------------------------------------*/
 
   formOrder: FormGroup;
+  productId: string;
+  productName: string | null;
+  productImage: string;
+
+  userBuyerId: string;
+  userBuyerName: string | null;
+  userBuyerEmail: string | null;
+
 
   isReadonlyDAM: boolean;
   isReadonlyDepostTemporary: Boolean;
@@ -49,14 +60,24 @@ export class AddOrderComponent implements OnInit {
   email: any[] = [];
   id: string | null;
 
+  userSellerId: any = {};
+
   @Input() checkIdDAM: boolean;
   @Input() checkIdDepostTemporary: boolean;
   @Input() checkIdOrder: boolean;
 
+  show = false;
+
+  loadingConfig: INg2LoadingSpinnerConfig = {
+   
+  };
 
 
   constructor(private orderService: OrderService,
     private formBuilder: FormBuilder,
+    private productService: ProductService,
+    private userService: UserService,
+    private userBuyerService: UserBuyerService,
     private router: Router,
     private toastr: ToastrService,
     private aRoute: ActivatedRoute) {
@@ -67,14 +88,13 @@ export class AddOrderComponent implements OnInit {
       nameProduct: [{ value: '', disabled: true }, Validators.required],
       priceProduct: [{ value: '', disabled: true }, Validators.required],
       paymentTerms: [{ value: '', disabled: true }, Validators.required],
-      estimatedAmount: [{ value: '', disabled: true }, Validators.required],
-      unit: [{ value: '', disabled: true }, Validators.required],
+      estimateAmount: [{ value: '', disabled: true }, Validators.required],
       destiny: [{ value: '', disabled: true }, Validators.required],
       shippingDate: [{ value: '', disabled: true }, Validators.required],
       stateProduction: ['', Validators.required]
     })
     this.id = this.aRoute.snapshot.paramMap.get('id');
-    console.log(this.id);
+    this.userSellerId = this.userService.getIdentity();
   }
 
   ngOnInit(): void {
@@ -82,6 +102,87 @@ export class AddOrderComponent implements OnInit {
     this.isReadonlyDAM = true;
   }
 
+  getOrder() {
+    if (this.id !== null) {
+      this.orderService.getOrder(this.id).subscribe(data => {
+        this.stateProduction = data.payload.data()['stateProduction'];
+        this.getProduct(data.payload.data()['productId']);
+        this.getUserBuyer(data.payload.data()['userId']);
+
+        this.checkDAM = data.payload.data()['stateDAM'];
+        this.checkDepostTemporary = data.payload.data()['stateDepostTemporary'];
+        this.checkOrder = data.payload.data()['stateOrder'];
+        this.stateSlider = data.payload.data()['stateProduction'];
+
+        this.options = {
+          floor: 0,
+          ceil: 100,
+          step: 1,
+          minLimit: this.stateSlider,
+          maxLimit: 100
+        }
+
+        if (this.checkDAM === true) {
+          this.checkIdDAM = true;
+          this.isReadonlyDAM = true;
+        } else {
+          this.checkIdDAM = false;
+          this.isReadonlyDAM = false;
+        }
+
+        if (this.checkDepostTemporary === true) {
+          this.checkIdDepostTemporary = true;
+          this.isReadonlyDepostTemporary = true;
+        } else {
+          this.checkIdDepostTemporary = false;
+          this.isReadonlyDepostTemporary = false;
+        }
+
+        if (this.checkOrder === true) {
+          this.checkIdOrder = true;
+          this.isReadonlyOrder = true;
+        } else {
+          this.checkIdOrder = false;
+          this.isReadonlyOrder = false;
+        }
+
+        this.formOrder.setValue({
+          emailClient: '',
+          nameClient: '',
+          nameProduct: '',
+          priceProduct: data.payload.data()['priceProduct'],
+          paymentTerms: data.payload.data()['paymentTerms'],
+          estimateAmount: data.payload.data()['estimateAmount'],
+          destiny: data.payload.data()['destiny'],
+          shippingDate: data.payload.data()['shippingDate'],
+          stateProduction: data.payload.data()['stateProduction']
+        });
+      });
+    }
+  }
+
+
+  getProduct(idproduct) {
+    if (idproduct !== null) {
+      this.productService.getProduct(idproduct).subscribe(res => {
+        this.productName = res.payload.data()['name'];
+        this.productImage = res.payload.data()['image'];
+        this.formOrder.controls['nameProduct'].setValue(this.productName);
+        
+      });
+    }
+  }
+
+  getUserBuyer(userBuyerId) {
+    if (userBuyerId !== null) {
+      this.userBuyerService.getUserBuyer(userBuyerId).subscribe(data => {
+        this.userBuyerName = data.payload.data()['firstName'];
+        this.userBuyerEmail = data.payload.data()['email'];
+        this.formOrder.controls['nameClient'].setValue(this.userBuyerName);
+        this.formOrder.controls['emailClient'].setValue(this.userBuyerEmail);
+      });
+    }
+  }
 
   getAdvance(value: number): void {
     this.production = `${value}`;
@@ -101,10 +202,12 @@ export class AddOrderComponent implements OnInit {
   }
 
   editOrder(id: string) {
+    this.show = true;
     const order: any = {
       stateProduction: this.production
     }
     this.orderService.updateOrder(id, order).then(() => {
+      this.show = false;
       this.toastr.info('El avance de producción fue modificado con éxito', 'Estado de producción', {
         positionClass: 'toast-bottom-right'
       });
@@ -150,69 +253,6 @@ export class AddOrderComponent implements OnInit {
 
   /* https://angular-slider.github.io/ngx-slider/demos */
 
-  getOrder() {
-    if (this.id !== null) {
-      this.orderService.getOrder(this.id).subscribe(data => {
-        this.stateProduction = data.payload.data()['stateProduction'];
-        this.checkDAM = data.payload.data()['stateDAM'];
-        this.checkDepostTemporary = data.payload.data()['stateDepostTemporary'];
-        this.checkOrder = data.payload.data()['stateOrder'];
-
-        this.stateSlider = data.payload.data()['stateProduction'];
-
-        this.options = {
-          floor: 0,
-          ceil: 100,
-          step: 1,
-          minLimit: this.stateSlider,
-          maxLimit: 100
-        }
-
-        if (this.checkDAM === true) {
-          console.log(this.checkDAM);
-          this.checkIdDAM = true;
-          this.isReadonlyDAM = true;
-        } else {
-          this.checkIdDAM = false;
-          this.isReadonlyDAM = false;
-        }
-
-        if (this.checkDepostTemporary === true) {
-          console.log(this.checkDepostTemporary);
-          this.checkIdDepostTemporary = true;
-          this.isReadonlyDepostTemporary = true;
-        } else {
-          this.checkIdDepostTemporary = false;
-          this.isReadonlyDepostTemporary = false;
-        }
-
-        if (this.checkOrder === true) {
-          console.log(this.checkOrder);
-          this.checkIdOrder = true;
-          this.isReadonlyOrder = true;
-        } else {
-          this.checkIdOrder = false;
-          this.isReadonlyOrder = false;
-        }
-
-        this.formOrder.setValue({
-          emailClient: data.payload.data()['emailClient'],
-          nameClient: data.payload.data()['nameClient'],
-          nameProduct: data.payload.data()['nameProduct'],
-          priceProduct: data.payload.data()['priceProduct'],
-          paymentTerms: data.payload.data()['paymentTerms'],
-          estimatedAmount: data.payload.data()['estimatedAmount'],
-          unit: data.payload.data()['unit'],
-          destiny: data.payload.data()['destiny'],
-          shippingDate: data.payload.data()['shippingDate'],
-          stateProduction: data.payload.data()['stateProduction']
-        })
-      });
-    }
-  }
-
-
-
   sendMailDAM() {
     let date = Date.now();
     var emailData = {
@@ -231,7 +271,6 @@ export class AddOrderComponent implements OnInit {
       console.error(error, "error");
     });
   }
-
 
 
   /** Código fuente extraído de Stackoverflow 
@@ -284,12 +323,10 @@ export class AddOrderComponent implements OnInit {
     this.checkIdDepostTemporary = false;
   }
 
-  /*value: number = 10;
-  options: Options = {
-    floor: 0,
-    ceil: 100,
-    minLimit: 10,
-  };*/
-
-
+  showLoading() {
+    this.show = true;
+    setTimeout(() => {
+      this.show = false;
+    }, 1500);
+  }
 }

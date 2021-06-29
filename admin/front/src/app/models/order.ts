@@ -1,14 +1,12 @@
 export class Order{
     userSeller?: string;
     userId?: string;
+    productName?: string;
+    userBuyerName?:string;
     productId?: string;
-    nameProduct?: string;
     priceProduct?: string;
     paymentTerms?: string;
-    estimatedAmount?: string;
-    unit?: string;
-    nameClient?: string;
-    emailClient?: string;
+    estimateAmount?: string;
     destiny?: string;
     shippingDate?: string;
     stateProduction?: string;

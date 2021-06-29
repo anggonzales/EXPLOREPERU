@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
+import { ANIMATION_TYPES, INg2LoadingSpinnerConfig } from 'ng2-loading-spinner';
 import { User } from 'src/app/models/user';
 
 @Component({
@@ -16,6 +17,11 @@ export class LoginComponent implements OnInit {
   localStorageEmail: any;
   localStorageId: string;
   userData: any;
+  show = false;
+
+  loadingConfig: INg2LoadingSpinnerConfig = {
+   
+  };
 
   constructor(private auth: AngularFireAuth, private firestore: AngularFirestore, private router: Router,) {
     this.auth.authState.subscribe(user => {
@@ -38,9 +44,12 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log(this.email);
+    this.show = true;
     this.auth.signInWithEmailAndPassword(this.email, this.password).then((res) => {
+      this.show = false;
       this.SetUserData(res.user);
       this.router.navigate(['productlist']);
+      
     });
   }
 
@@ -63,4 +72,11 @@ export class LoginComponent implements OnInit {
     })
   }
 
+  showLoading() {
+    this.show = true;
+    setTimeout(() => {
+      this.show = false;
+    }, 1500);
+  }
+  
 }

@@ -1,9 +1,9 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { Product } from 'src/app/models/Product';
 import { MessageService } from 'src/app/services/message.service';
 import { OrderService } from 'src/app/services/order.service';
 import { ProductService } from 'src/app/services/product.service';
@@ -14,7 +14,8 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-quote',
   templateUrl: './quote.component.html',
-  styleUrls: ['./quote.component.css']
+  styleUrls: ['./quote.component.css'],
+  providers: [DatePipe]
 })
 export class QuoteComponent implements OnInit {
 
@@ -27,12 +28,16 @@ export class QuoteComponent implements OnInit {
   formQuotation: FormGroup;
 
   /* Consulta de producto y usuario comprador */
-  productId: any;
+  productId: string;
   productName: string | null;
-  imageProduct: string;
+  productImage: string;
 
   userBuyerId: string;
-  userBuyerSelect: any = null;
+  userBuyerName: string | null;
+  preferredLanguage: string | null;
+  userBuyerEmail: string | null;
+  
+
   messageAnswered: string;
   userSellerId: any = {};
   submitted = false;
@@ -46,6 +51,7 @@ export class QuoteComponent implements OnInit {
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
     private router: Router,
+    private dateFormat: DatePipe,
     private aRoute: ActivatedRoute) {
 
     this.formQuotation = this.formBuilder.group({
@@ -56,11 +62,11 @@ export class QuoteComponent implements OnInit {
       destiny: [{ value: '', disabled: true }, Validators.required],
       shippingDate: [{ value: '', disabled: true }, Validators.required],
       status: [{ value: '', disabled: true }, Validators.required],
-      messageTranslate: [{ value: '', disabled: true }, Validators.required],
-      messageAnswered: [{ value: '', disabled: false }, Validators.required],
+      messageTranslate: [{ value: '', disabled: true }],
+      messageAnswered: [{ value: '', disabled: false }],
       nameClient: [{ value: '', disabled: false }, Validators.required],
       emailClient: [{ value: '', disabled: false }, Validators.required],
-      messageAnsweredTranslate: [{ value: '', disabled: true }, Validators.required]
+      messageAnsweredTranslate: [{ value: '', disabled: true }]
     });
 
     this.id = this.aRoute.snapshot.paramMap.get('id');
@@ -76,12 +82,10 @@ export class QuoteComponent implements OnInit {
     if (this.id !== null) {
       this.quotationService.getQuotation(this.id).subscribe(data => {
 
-        var IProduct = data.payload.data()['productId'];
-        this.userBuyerId = data.payload.data()['usersId'];
-
         this.getProduct(data.payload.data()['productId']);
-
-        console.log(this.productId);
+        this.getUserBuyer(data.payload.data()['userId']);
+        this.productId = data.payload.data()['productId'];
+        this.userBuyerId = data.payload.data()['userId'];
 
         this.formQuotation.setValue({
           nameProduct: '',
@@ -96,19 +100,7 @@ export class QuoteComponent implements OnInit {
           messageTranslate: data.payload.data()['messageTranslate'],
           messageAnswered: data.payload.data()['messageAnswered'],
           messageAnsweredTranslate: data.payload.data()['messageAnsweredTranslate']
-        })
-
-        this.userBuyerService.getUserBuyer(this.userBuyerId).subscribe(data => {
-          //this.userBuyerSelect = JSON.parse(JSON.stringify(data[0]));
-          this.formQuotation.controls['nameClient'].setValue(data.payload.data()['firstName']);
         });
-
-        /*this.userService.getUser(this.userBuyerId).subscribe(data => {
-          this.userBuyerSelect = JSON.parse(JSON.stringify(data[0]));
-          this.formQuotation.controls['nameClient'].setValue(this.userBuyerSelect.name);
-          this.formQuotation.controls['emailClient'].setValue(this.userBuyerSelect.email);
-        });*/
-
       });
     }
   }
@@ -117,22 +109,27 @@ export class QuoteComponent implements OnInit {
     if (idproduct !== null) {
       this.productService.getProduct(idproduct).subscribe(res => {
         this.productName = res.payload.data()['name'];
+        this.productImage = res.payload.data()['image'];
         this.formQuotation.controls['nameProduct'].setValue(this.productName);
-        this.imageProduct = res.payload.data()['image'];
-        console.log(this.productName);
+        
       });
     }
   }
 
-  getUserBuyer() {
-    this.userService.getUser(this.userBuyerId).subscribe(data => {
-      this.userBuyerSelect = JSON.parse(JSON.stringify(data[0]));
-      console.log(this.userBuyerSelect.languageCode);
-    });
+  getUserBuyer(userBuyerId) {
+    if (userBuyerId !== null) {
+      this.userBuyerService.getUserBuyer(userBuyerId).subscribe(data => {
+        this.userBuyerName = data.payload.data()['firstName'];
+        this.userBuyerEmail = data.payload.data()['email'];
+        this.preferredLanguage = data.payload.data()['preferredLanguage'];
+        this.formQuotation.controls['nameClient'].setValue(this.userBuyerName);
+        this.formQuotation.controls['emailClient'].setValue(this.userBuyerEmail);
+      });
+    }
   }
 
   getMessageTranslate() {
-    this.messageService.translateText(this.formQuotation.controls['messageAnswered'].value, this.userBuyerSelect.languageCode).subscribe(
+    this.messageService.translateText(this.formQuotation.controls['messageAnswered'].value, this.preferredLanguage).subscribe(
       res => {
         this.messageAnswered = JSON.parse(JSON.stringify(res[0].translations[0].text));
         this.formQuotation.controls['messageAnsweredTranslate'].setValue(this.messageAnswered);
@@ -157,20 +154,19 @@ export class QuoteComponent implements OnInit {
     const order = {
       userSeller: this.userSellerId,
       userId: this.userBuyerId,
+      productName: this.productName,
       productId: this.productId,
-      nameProduct: this.productName,
+      userBuyerName: this.userBuyerName,
       priceProduct: this.formQuotation.controls['price'].value,
       paymentTerms: this.formQuotation.controls['paymentTerms'].value,
       estimateAmount: this.formQuotation.controls['estimateAmount'].value,
-      nameClient: '',
-      emailClient: '',
       destiny: this.formQuotation.controls['destiny'].value,
       shippingDate: this.formQuotation.controls['shippingDate'].value,
+      stateStartingOrder: 'EN PROCESO',
       stateProduction: "0",
       stateDAM: false,
       stateDepostTemporary: false,
-      stateOrder: false,
-      stateStartingOrder: false
+      stateOrder: false
     }
 
     this.orderService.createOrder(order).then(() => {
@@ -183,6 +179,7 @@ export class QuoteComponent implements OnInit {
       console.log(error);
     });
   }
+
 
   editQuotation(id: string) {
     const quotation: any = {
@@ -198,14 +195,15 @@ export class QuoteComponent implements OnInit {
     })
   }
 
+
   sendMailQuotation() {
     let date = Date.now();
     var emailData = {
       pedidoId: this.id,
-      name: this.userBuyerSelect.nameClient,
+      name: this.userBuyerName,
       message: this.messageAnswered,
-      email: this.userBuyerSelect.emailClient,
-      createAt: '',
+      email: this.userBuyerEmail,
+      createAt: this.dateFormat.transform(date, 'MMM d, y, h:mm:ss a')
     }
 
     this.orderService.sendEmail(emailData).subscribe(data => {

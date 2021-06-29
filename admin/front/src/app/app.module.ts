@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +14,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DataTablesModule } from 'angular-datatables';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { NgxSummernoteModule } from 'ngx-summernote';
+import { ANIMATION_TYPES, Ng2LoadingSpinnerModule } from 'ng2-loading-spinner';
+import { NgxConfirmBoxModule, NgxConfirmBoxService } from 'ngx-confirm-box';
 
 //Módulos Firebase
 import { AngularFireModule } from '@angular/fire';
@@ -75,6 +77,14 @@ const config = {
     NgxDropzoneModule,
     NgxSummernoteModule,
     ToastrModule.forRoot(),
+    NgxConfirmBoxModule,
+    Ng2LoadingSpinnerModule.forRoot({
+      animationType: ANIMATION_TYPES.chasingDots,
+      spinnerPosition: 'center',
+      spinnerColor   : '#fff',
+      spinnerSize: 'md',
+      backdropColor  : '#0000008a'
+    }),
     ConfirmationPopoverModule.forRoot({
       confirmButtonType: 'danger',
     }),
@@ -83,5 +93,6 @@ const config = {
   ],
   providers: [],
   bootstrap: [AppComponent]
+
 })
 export class AppModule { }

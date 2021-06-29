@@ -3,4 +3,6 @@ export class UserTest {
     email: string;
     languageCode: string;
     name: string;
+    firstName?: string;
+    preferredLanguage?: string;
 }

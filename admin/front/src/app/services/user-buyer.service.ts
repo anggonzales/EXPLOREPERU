@@ -20,4 +20,9 @@ export class UserBuyerService {
   getUserBuyer(id: string): Observable<any> {
     return this.firestore.collection('users').doc(id).snapshotChanges();
   }
+
+  updateUserBuyer(id: string, data:any): Promise<any> {
+    return this.firestore.collection('users').doc(id).update(data);
+  }
+
 }

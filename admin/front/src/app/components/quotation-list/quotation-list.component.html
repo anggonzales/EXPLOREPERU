@@ -35,10 +35,10 @@
                                 <tbody>
                                     <tr *ngFor="let quotation of quotations; index as i">
                                         <td>{{ i + 1 }}</td>
-                                        <td></td>
+                                        <td>{{ quotation.productName}} </td>
                                         <td></td>
                                         <td>{{ quotation.destiny }}</td>
-                                        <td>{{ quotation.applicationDate }}</td>
+                                        <td>{{ quotation.aplicationDate }}</td>
                                         <td>{{ quotation.status }}</td>
                                         <td>
                                             <a [routerLink]="['/editquotation/', quotation.id]"

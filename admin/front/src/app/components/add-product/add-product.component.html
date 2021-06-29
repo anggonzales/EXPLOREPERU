@@ -1,5 +1,5 @@
 <!-- Page Wrapper -->
-<div id="wrapper">
+<div id="wrapper" [ng2-loading]="show" [config]="loadingConfig" [template]="customTemplate">
     <app-sidebar></app-sidebar>
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -19,9 +19,13 @@
                                     <div class="card mb-4">
                                         <div class="card-header">Detalles Producto</div>
                                         <div class="card-body">
-                                            <div class="form-group">
-                                                <label>Nombre</label>
-                                                <input class="form-control" type="text" formControlName="name">
+                                            <div class="row">
+                                                <div class="col-xl-12">
+                                                    <div class="form-group">
+                                                        <label>Nombre</label>
+                                                        <input class="form-control" type="text" formControlName="name">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col">
@@ -83,55 +87,45 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3">
-                                    <div class="card">
-                                        <div class="card-header">Imagen Principal</div>
-                                        <label class="pb-5" for="productImage">
-                                            <img src="{{imageUpload}}" width="100" height="100"
-                                                class="img-fluid changeImage">
-
-                                        </label>
-
-                                        <div class="custom-file">
-
-                                            <input type="file" class="custom-file-input formProduct" id="productImage"
-                                                accept="image/*" maxSize="2000000"
-                                                (change)="validateImage($event, 'changeImage')" required>
-
-
-                                            <div class="valid-feedback">Valid.</div>
-                                            <div class="invalid-feedback">Please fill out this field.</div>
-
-                                            <label class="custom-file-label" for="productImage">Choose file</label>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-6">
-                                    <div class="card">
-                                        <div class="card-header">Galería Producto</div>
-                                        <div class="custom-dropzone mb-5" ngx-dropzone (change)="onSelect($event)">
-                                            <ngx-dropzone-label>
-                                                <div>
-                                                    <h2 class="text-muted">Arrastre las imágenes</h2>
+                                            <div class="row">
+                                                <div class="col-xl-4">
+                                                    <div class="card">
+                                                        <div class="card-header">Imagen Producto</div>
+                                                        <div class="card-body text-center">
+                                                            <label class="pb-5" for="productImage">
+                                                                <img src="{{imageUpload}}" width="100" height="100"
+                                                                    class="img-fluid changeImage ">
+                                                            </label>
+                                                            <div class="custom-file">
+                                                                <input type="file" class="custom-file-input formProduct"
+                                                                    id="productImage" accept="image/*" maxSize="2000000"
+                                                                    (change)="validateImage($event, 'changeImage')"
+                                                                    required>
+                                                                <div class="valid-feedback">Valid.</div>
+                                                                <div class="invalid-feedback">Please fill out this
+                                                                    field.
+                                                                </div>
+                                                                <label class="custom-file-label"
+                                                                    for="productImage">Elija la
+                                                                    imagen</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </ngx-dropzone-label>
-                                            <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview"
-                                                *ngFor="let f of files" [file]="f" [removable]="true"
-                                                (removed)="onRemove(f)">
-                                                <ngx-dropzone-label>
-                                                    {{f.name }} {{f.type}}
-                                                </ngx-dropzone-label>
-
-                                            </ngx-dropzone-image-preview>
+                                                <div class="col-xl-4">
+                                                    <div class="card-body">
+                                                        <button class="btn btn-info" type="button" data-toggle="modal"
+                                                            data-target="#exampleModalXl">
+                                                            <i class="fas fa-images"></i> Ver Galería
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- GALERÍA DE PRODUCTOS -->
                             </div>
                             <div class="modal-footer">
                                 <button id="btnCancelar" type="button" class="btn btn-danger"
@@ -145,3 +139,67 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="exampleModalXl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+    style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Galería</h5>
+                <button class="close" #closebutton type="button" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header">Galería Producto Actual</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <figure *ngFor="let image of productGallery" class="col-2 text-center pb-3">
+                                    <img src="{{image}}" width="100" height="100">
+                                    <button type="button" class="btn btn-danger btn-sm removeGallery"
+                                        mwlConfirmationPopover [popoverTitle]="popoverTitle"
+                                        [popoverMessage]="popoverMessage" [confirmText]="confirmText"
+                                        [cancelText]="cancelText" placement="top"
+                                        (confirm)="removeGallery(image)" 
+                                        (cancel)="remove()">Eliminar</button>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header">Galería Producto</div>
+                        <div class="custom-dropzone mb-5" ngx-dropzone (change)="onSelect($event)">
+                            <ngx-dropzone-label>
+                                <div>
+                                    <h2 class="text-muted">Arrastre las imágenes</h2>
+                                </div>
+                            </ngx-dropzone-label>
+                            <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files"
+                                [file]="f" [removable]="true" (removed)="onRemove(f)">
+                                <ngx-dropzone-label>
+                                    {{f.name }} {{f.type}}
+                                </ngx-dropzone-label>
+
+                            </ngx-dropzone-image-preview>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnCancelar" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" (click)="saveGallery()" class="btn btn-success">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #customTemplate>
+    <div class="align-items-center d-flex flex-column flex-direction">
+        <p>Cargando ...</p>
+        <div class="custom-loader"></div>
+    </div>
+</ng-template>

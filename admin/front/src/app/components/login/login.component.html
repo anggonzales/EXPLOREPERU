@@ -1,4 +1,5 @@
-<div class="layout">
+<div class="layout" [ng2-loading]="show"
+[config]="loadingConfig" [template]="customTemplate">
 
     <div class="container d-flex flex-column">
         <div class="row align-items-center justify-content-center no-gutters min-vh-100">
@@ -12,7 +13,7 @@
                 <p class="text-center mb-6"></p>
 
                 <!-- Form -->
-                <form class="mb-6">
+                <form class="mb-6" >
                     <!-- Email -->
                     <div class="form-group">
                         <label for="email" class="sr-only">Correo electrónico</label>
@@ -32,8 +33,15 @@
                     <button class="btn btn-lg btn-block btn-primary" type="button" (click)="login()">Iniciar
                         Sesión</button>
                 </form>
-
             </div>
+            
         </div> <!-- / .row -->
     </div>
 </div><!-- .layout -->
+
+<ng-template #customTemplate>
+    <div class="align-items-center d-flex flex-column flex-direction">
+        <p>Cargando ...</p>
+        <div class="custom-loader"></div>
+    </div>
+</ng-template>
