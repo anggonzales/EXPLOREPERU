@@ -43,8 +43,8 @@
                                         <td>
                                             <a [routerLink]="['/editquotation/', quotation.id]"
                                                 class="btn btn-warning mr-3"><i class="fa fa-edit"></i></a>
-                                            <a routerLink="/chat" class="btn btn-danger mr-3" target="_blank"><i
-                                                    class="fa fa-comments"></i></a>
+                                            <a [routerLink]="['/orderconsult/',quotation.id]" class="btn btn-secondary mr-3"><i
+                                                    class="fas fa-vector-square"></i></a>
                                         </td>
                                     </tr>
                                 </tbody>

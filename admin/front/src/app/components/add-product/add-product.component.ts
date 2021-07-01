@@ -196,23 +196,6 @@ export class AddProductComponent implements OnInit {
 
       });
     }
-
-
-    //this.toastr.info('El producto fue modificado con éxito', 'Producto actualizado', {
-    //  positionClass: 'toast-bottom-right'
-    //});
-    //this.router.navigate(['/productlist']);
-
-
-    /*this.productService.updateProduct(id, this.product).then(() => {
-      this.show = false;
-      this.toastr.info('El producto fue modificado con éxito', 'Producto actualizado', {
-        positionClass: 'toast-bottom-right'
-      });
-      this.router.navigate(['/productlist']);
-    }).catch(error => {
-      console.log(error);
-    });*/
   }
 
   removeGallery(image) {
@@ -235,8 +218,6 @@ export class AddProductComponent implements OnInit {
       }
     })
   }
-
-
 
   validateImage(e, tagPicture) {
     this.imageProduct = e.target.files[0];

@@ -4,9 +4,11 @@ import { AddOrderComponent } from './components/add-order/add-order.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { LoginComponent } from './components/login/login.component';
+import { OrderUserComponent } from './components/order-user/order-user.component';
 
 
 import { OrderComponent } from './components/order/order.component';
+import { PerfilComponent } from './components/perfil/perfil.component';
 import { ProductComponent } from './components/product/product.component';
 import { QuotationListComponent } from './components/quotation-list/quotation-list.component';
 import { QuoteComponent } from './components/quote/quote.component';
@@ -17,10 +19,12 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'chat', component: ChatComponent },
+  { path: 'perfil', component: PerfilComponent },
   { path: 'productlist', component: ProductComponent },
   { path: 'orderlist', component: OrderComponent },
   { path: 'quotationlist', component: QuotationListComponent },
   { path: 'createproduct', component: AddProductComponent },
+  { path: 'orderconsult/:id', component: OrderUserComponent },
   { path: 'editorder/:id', component: AddOrderComponent },
   { path: 'editquotation/:id', component: QuoteComponent },
   { path: 'editproduct/:id', component: AddProductComponent }

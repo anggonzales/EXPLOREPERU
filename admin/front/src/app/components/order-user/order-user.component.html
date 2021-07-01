@@ -1,0 +1,83 @@
+<table class="table ps-table--whishlist dt-responsive dataTable no-footer dtr-inline" width="100%" role="grid"
+    aria-describedby="DataTables_Table_0_info" style="width: 100%;">
+    <thead>
+        <tr role="row">
+            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                style="width: 310.5px;" aria-label="Product name: activate to sort column ascending">Producto</th>
+            <th class="sorting_desc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                style="width: 485.5px;" aria-label="Proccess: activate to sort column ascending" aria-sort="descending">
+                Proceso</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr role="row" class="odd">
+            <td tabindex="0" class="">
+                <div class="ps-product--cart">
+                    <div class="ps-product__thumbnail">
+                        <a href="product-default.html">
+                            <img [src]="productImage" style="width:200px;" alt="">
+                        </a>
+                    </div>
+                    <div class="ps-product__content">
+                        <a href="">{{productName}}</a>
+                    </div>
+                    <br>
+                    <div class="ps-product__content">
+                        <p>Cantidad</p>
+                        <a href="">{{productAmount}}</a>
+                    </div>
+                </div>
+            </td>
+
+            <td style="" class="sorting_1">
+                <ul class="timeline">
+                    <li class="success">
+                        <p>Cotización</p>
+                        <h6>15 March, 2021</h6>
+                        <p class="text-success">Aceptado <i class="fas fa-check"></i></p>
+                        <p>Comment: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum quaerat recusandae
+                            necessitatibus nesciunt</p>
+                    </li>
+                    <li class="process">
+                        <p>Pedido</p>
+                        <p class="text-success">En Proceso <i class="fas fa-check"></i></p>
+                        <p>Porcentaje de avance de producción: 98%</p>
+                        <p>Jun 23, 2021, 6:11:46 PM</p>
+                        <button class="btn btn-primary-order" disabled="">
+                            <span class="spinner-border spinner-border-sm"></span>
+                            In process
+                        </button>
+                    </li>
+                    <li class="process">
+                        <p>Proceso de exportación</p>
+                        <p>Generación del Documento de Mercancías Aduanero</p>
+                        <p class="text-success">En Proceso <i class="fas fa-check"></i></p>
+                        <button class="btn btn-primary-order" disabled="">
+                            <span class="spinner-border spinner-border-sm"></span>
+                            In process
+                        </button>
+                    </li>
+                    <li class="process">
+                        <p>Proceso de exportación</p>
+                        <p>Depósito Temporal</p>
+                        <p class="text-success">En Proceso <i class="fas fa-check"></i></p>
+                        <button class="btn btn-primary-order" disabled="">
+                            <span class="spinner-border spinner-border-sm"></span>
+                            In process
+                        </button>
+                    </li>
+                    <li class="process">
+                        <p>Proceso de exportación</p>
+                        <p>Orden de Salida</p>
+                        <p class="text-success">En Proceso <i class="fas fa-check"></i></p>
+                        <button class="btn btn-primary-order" disabled="">
+                            <span class="spinner-border spinner-border-sm"></span>
+                            In process
+                        </button>
+                    </li>
+                </ul>
+                <a class="btn btn-success btn-sm" href="#">Finalizado</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

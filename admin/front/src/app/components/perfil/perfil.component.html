@@ -1,0 +1,74 @@
+<div id="wrapper">
+    <app-sidebar></app-sidebar>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <app-topbar></app-topbar>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="modal-body">
+                    <form [formGroup]="formPerfil" (ngSubmit)="update()">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="card">
+                                    <div class="card-header">Perfil Usuario</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-xl-12">
+                                                <div class="form-group">
+                                                    <label>Foto de Perfil</label>
+                                                    <div class="position-relative text-center bg-secondary rounded p-6">
+                                                        <div class="avatar bg-primary text-white mb-5">
+                                                            <i class="fas fa-images"></i>
+                                                        </div>
+
+                                                        <p class="small text-muted mb-0"></p>
+                                                        <input id="upload-chat-photo" class="d-none" type="file">
+                                                        <label class="stretched-label mb-0"
+                                                            for="upload-chat-photo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label>RUC</label>
+                                                    <input class="form-control" type="text" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label>Nombre</label>
+                                                    <input class="form-control" type="text" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label>Año de Fundación</label>
+                                                    <input class="form-control" type="text" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label>Descripción</label>
+                                                    <textarea class="form-control" rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

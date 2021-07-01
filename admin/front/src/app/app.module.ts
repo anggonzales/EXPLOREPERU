@@ -35,6 +35,8 @@ import { AddOrderComponent } from './components/add-order/add-order.component';
 import { LoginComponent } from './components/login/login.component';
 import { QuotationListComponent } from './components/quotation-list/quotation-list.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
+import { PerfilComponent } from './components/perfil/perfil.component';
+import { OrderUserComponent } from './components/order-user/order-user.component';
 
 const config = {
   apiKey: "AIzaSyBGQ5lU2iwjN35W2QkcAJoI4YJ3t4PSbcY",
@@ -61,7 +63,9 @@ const config = {
     AddOrderComponent,
     LoginComponent,
     QuotationListComponent,
-    AddProductComponent
+    AddProductComponent,
+    PerfilComponent,
+    OrderUserComponent
   ],
   imports: [
     BrowserModule,
