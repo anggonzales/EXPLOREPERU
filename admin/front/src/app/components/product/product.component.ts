@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, NgZone, ViewChild, OnDestroy } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/models/Product';
 import { CategoryService } from 'src/app/services/category.service';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { SubcategoryService } from 'src/app/services/subcategory.service';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -16,7 +14,7 @@ import { Subject } from 'rxjs';
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
-export class ProductComponent implements OnDestroy, OnInit {
+export class ProductComponent implements  OnInit, OnDestroy {
 
   @ViewChild('closebutton') closebutton;
 
@@ -36,15 +34,18 @@ export class ProductComponent implements OnDestroy, OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
 
 
-  constructor(private productService: ProductService, private categoryService: CategoryService, private subcategoryService: SubcategoryService, private storage: AngularFireStorage, private toastr: ToastrService,
-    private router: Router, private fb: FormBuilder, private userService: UserService) {
+  constructor(private productService: ProductService, 
+    private categoryService: CategoryService, 
+    private subcategoryService: SubcategoryService, 
+    private storage: AngularFireStorage, 
+    private toastr: ToastrService,
+    private userService: UserService) {
     this.userSellerId = this.userService.getIdentity();
   }
 
 
   ngOnInit(): void {
     this.getCategories();
-    //this.getProducts();
     this.getProductsFilter();
   }
 
@@ -61,21 +62,13 @@ export class ProductComponent implements OnDestroy, OnInit {
 
   getProductsFilter() {
     this.productService.getProductsFilter(this.userSellerId).subscribe(data => {
-      //this.products = [];
-      this.products =  data;
-      this.dtTrigger.next();
-    });
-  }
-
-  /*getProductsFilter() {
-    this.productService.getProductsFilter(this.userSellerId).subscribe(data => {
       this.products = [];
       for (const i in data) {
         this.products.push(data[i]);
       }
       this.dtTrigger.next();
     });
-  }*/
+  }
 
 
   getCategories(): void {
@@ -150,7 +143,6 @@ export class ProductComponent implements OnDestroy, OnInit {
     console.log(this.image);
   }
 
-  //DataTable
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }

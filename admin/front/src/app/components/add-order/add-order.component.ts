@@ -1,9 +1,12 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { INg2LoadingSpinnerConfig } from 'ng2-loading-spinner';
 import { Options } from 'ng5-slider';
 import { ToastrService } from 'ngx-toastr';
+import { Order } from 'src/app/models/order';
+import { MessageService } from 'src/app/services/message.service';
 import { OrderService } from 'src/app/services/order.service';
 import { ProductService } from 'src/app/services/product.service';
 import { UserBuyerService } from 'src/app/services/user-buyer.service';
@@ -12,7 +15,8 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-add-order',
   templateUrl: './add-order.component.html',
-  styleUrls: ['./add-order.component.css']
+  styleUrls: ['./add-order.component.css'],
+  providers: [DatePipe]
 })
 export class AddOrderComponent implements OnInit {
 
@@ -35,10 +39,13 @@ export class AddOrderComponent implements OnInit {
   productId: string;
   productName: string | null;
   productImage: string;
+  productAmount: string;
+  productTranslate:string;
 
   userBuyerId: string;
   userBuyerName: string | null;
   userBuyerEmail: string | null;
+  preferredLanguage: string;
 
 
   isReadonlyDAM: boolean;
@@ -53,6 +60,8 @@ export class AddOrderComponent implements OnInit {
   checkDepostTemporary: boolean = false;
   checkOrder: boolean = false;
 
+  order: Order = new Order();
+
   production: any;
   stateProduction: any;
   stateSlider: number
@@ -60,7 +69,9 @@ export class AddOrderComponent implements OnInit {
   email: any[] = [];
   id: string | null;
 
+
   userSellerId: any = {};
+  date = Date.now();
 
   @Input() checkIdDAM: boolean;
   @Input() checkIdDepostTemporary: boolean;
@@ -69,16 +80,16 @@ export class AddOrderComponent implements OnInit {
   show = false;
 
   loadingConfig: INg2LoadingSpinnerConfig = {
-   
-  };
 
+  };
 
   constructor(private orderService: OrderService,
     private formBuilder: FormBuilder,
     private productService: ProductService,
     private userService: UserService,
     private userBuyerService: UserBuyerService,
-    private router: Router,
+    private messageService: MessageService,
+    private dateFormat: DatePipe,
     private toastr: ToastrService,
     private aRoute: ActivatedRoute) {
 
@@ -108,7 +119,8 @@ export class AddOrderComponent implements OnInit {
         this.stateProduction = data.payload.data()['stateProduction'];
         this.getProduct(data.payload.data()['productId']);
         this.getUserBuyer(data.payload.data()['userId']);
-
+ 
+        this.productAmount = data.payload.data()['estimateAmount'];
         this.checkDAM = data.payload.data()['stateDAM'];
         this.checkDepostTemporary = data.payload.data()['stateDepostTemporary'];
         this.checkOrder = data.payload.data()['stateOrder'];
@@ -168,7 +180,10 @@ export class AddOrderComponent implements OnInit {
         this.productName = res.payload.data()['name'];
         this.productImage = res.payload.data()['image'];
         this.formOrder.controls['nameProduct'].setValue(this.productName);
-        
+        this.messageService.translateText(this.productName, this.preferredLanguage).subscribe(
+          data => {
+            this.productTranslate = JSON.parse(JSON.stringify(data[0].translations[0].text));
+          })
       });
     }
   }
@@ -178,6 +193,8 @@ export class AddOrderComponent implements OnInit {
       this.userBuyerService.getUserBuyer(userBuyerId).subscribe(data => {
         this.userBuyerName = data.payload.data()['firstName'];
         this.userBuyerEmail = data.payload.data()['email'];
+        
+        this.preferredLanguage = data.payload.data()['preferredLanguage'];
         this.formOrder.controls['nameClient'].setValue(this.userBuyerName);
         this.formOrder.controls['emailClient'].setValue(this.userBuyerEmail);
       });
@@ -197,17 +214,19 @@ export class AddOrderComponent implements OnInit {
 
     if (this.id !== null) {
       this.editOrder(this.id);
-      this.sendMailDAM();
     }
   }
 
   editOrder(id: string) {
     this.show = true;
     const order: any = {
-      stateProduction: this.production
+      stateProduction: this.production,
+      stateProductionDate: this.dateFormat.transform(this.date, 'MMM d, y, h:mm:ss a')
     }
+
     this.orderService.updateOrder(id, order).then(() => {
       this.show = false;
+      this.sendMailStateProduction();
       this.toastr.info('El avance de producción fue modificado con éxito', 'Estado de producción', {
         positionClass: 'toast-bottom-right'
       });
@@ -216,11 +235,12 @@ export class AddOrderComponent implements OnInit {
 
   editOrderDAM(id: string) {
     const order: any = {
-      stateDAM: this.isSwitchedDAM
+      stateDAM: this.isSwitchedDAM,
+      stateDAMDate: this.dateFormat.transform(this.date, 'MMM d, y, h:mm:ss a')
     }
 
     this.orderService.updateOrder(id, order).then(() => {
-      this.sendMailDAM();
+      this.sendMailStateDAM();
       this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
         positionClass: 'toast-bottom-right'
       });
@@ -228,11 +248,13 @@ export class AddOrderComponent implements OnInit {
   }
 
   editOrderDepostTemporary(id: string) {
+    this.sendMailStateDepostTemporary();
     const order: any = {
-      stateDepostTemporary: this.isSwitchedDepost
+      stateDepostTemporary: this.isSwitchedDepost,
+      stateDepostTemporaryDate: this.dateFormat.transform(this.date, 'MMM d, y, h:mm:ss a')
     }
+
     this.orderService.updateOrder(id, order).then(() => {
-      this.sendMailDAM();
       this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
         positionClass: 'toast-bottom-right'
       });
@@ -240,36 +262,143 @@ export class AddOrderComponent implements OnInit {
   }
 
   editOrderState(id: string) {
+    this.sendMailStateOrder();
     const order: any = {
-      stateOrder: this.isSwitchedOrder
+      stateOrder: this.isSwitchedOrder,
+      stateOrderDate: this.dateFormat.transform(this.date, 'MMM d, y, h:mm:ss a'),
+      stateStartingOrder: 'FINALIZADO'
     }
+
     this.orderService.updateOrder(id, order).then(() => {
-      this.sendMailDAM();
       this.toastr.info('El avance del proceso de exportación fue modificado con éxito', 'Estado de exportación', {
         positionClass: 'toast-bottom-right'
       });
     });
   }
 
-  /* https://angular-slider.github.io/ngx-slider/demos */
 
-  sendMailDAM() {
-    let date = Date.now();
-    var emailData = {
-      pedidoId: this.id,
-      name: 'Angel',
-      message: 'El porcentaje de avance de su pedido es del '+ this.production + '%',
-      email: 'info@gmail.com',
-      createAt: '',
-    }
 
-    this.orderService.sendEmail(emailData).subscribe(data => {
-      console.log(JSON.parse(JSON.stringify(emailData)));
-      let msg = data['message']
-      console.log(data, "success");
-    }, error => {
-      console.error(error, "error");
-    });
+  sendMailStateProduction() {
+    let messageStateProduction = 'El porcentaje de avance de su pedido es del ' + this.production + '%';
+    this.messageService.translateText(messageStateProduction, this.preferredLanguage).subscribe(
+      data => {
+        var emailData = {
+          orderId: this.id,
+          name: this.userBuyerName,
+          message: JSON.parse(JSON.stringify(data[0].translations[0].text)),
+          email: this.userBuyerEmail,
+          productName: this.productTranslate,
+          productImage: this.productImage,
+          productAmount: this.productAmount,
+          orderUser: 'http://localhost:4200/orderconsult/' + this.id,
+          createAt: this.dateFormat.transform(this.date, 'MMM d, y, h:mm:ss a')
+        }
+
+        this.orderService.sendEmail(emailData).subscribe(data => {
+          console.log(JSON.parse(JSON.stringify(emailData)));
+          let msg = data['message']
+          console.log(data, "success");
+        }, error => {
+          console.error(error, "error");
+        });
+      })
+  }
+
+  sendMailStateDAM() {
+    let messageDAM = 'Su pedido a finalizado la etapa de la Generación del Documento Aduanero de Mercancías. El siguiente proceso que se verá es el depósito temporal en almacén.';
+    this.messageService.translateText(messageDAM, this.preferredLanguage).subscribe(
+      data => {
+        var emailData = {
+          orderId: this.id,
+          name: this.userBuyerName,
+          message: JSON.parse(JSON.stringify(data[0].translations[0].text)),
+          email: this.userBuyerEmail,
+          productName: this.productTranslate,
+          productImage: this.productImage,
+          productAmount: this.productAmount,
+          orderUser: 'http://localhost:4200/orderconsult/' + this.id,
+          createAt: this.dateFormat.transform(this.date, 'MMM d, y, h:mm:ss a')
+        }
+
+        this.orderService.sendEmail(emailData).subscribe(data => {
+          console.log(JSON.parse(JSON.stringify(emailData)));
+          let msg = data['message']
+          console.log(data, "success");
+        }, error => {
+          console.error(error, "error");
+        });
+      })
+  }
+
+  sendMailStateDepostTemporary() {
+    let messageDepostTemporary = 'Su pedido ha pasado la etapa de depósito temporal en almacén. El siguiente proceso que se verá es la orden de salida.';
+    this.messageService.translateText(messageDepostTemporary, this.preferredLanguage).subscribe(
+      data => {
+        var emailData = {
+          orderId: this.id,
+          name: this.userBuyerName,
+          message: JSON.parse(JSON.stringify(data[0].translations[0].text)),
+          email: this.userBuyerEmail,
+          productName: this.productTranslate,
+          productImage: this.productImage,
+          productAmount: this.productAmount,
+          orderUser: 'http://localhost:4200/orderconsult/' + this.id,
+          createAt: this.dateFormat.transform(this.date, 'MMM d, y, h:mm:ss a')
+        }
+
+        this.orderService.sendEmail(emailData).subscribe(data => {
+          console.log(JSON.parse(JSON.stringify(emailData)));
+          let msg = data['message']
+          console.log(data, "success");
+        }, error => {
+          console.error(error, "error");
+        });
+      })
+  }
+
+  sendMailStateOrder() {
+    let messageStateOrder = 'Su pedido a finalizado el proceso de exportación. Su orden de pedido ha concluido el proceso de exportación.';
+    this.messageService.translateText(messageStateOrder, this.preferredLanguage).subscribe(
+      data => {
+        var emailData = {
+          orderId: this.id,
+          name: this.userBuyerName,
+          message: JSON.parse(JSON.stringify(data[0].translations[0].text)),
+          email: this.userBuyerEmail,
+          productName: this.productTranslate,
+          productImage: this.productImage,
+          productAmount: this.productAmount,
+          orderUser: 'http://localhost:4200/orderconsult/' + this.id,
+          createAt: this.dateFormat.transform(this.date, 'MMM d, y, h:mm:ss a')
+        }
+
+        this.orderService.sendEmail(emailData).subscribe(data => {
+          console.log(JSON.parse(JSON.stringify(emailData)));
+          let msg = data['message']
+          console.log(data, "success");
+        }, error => {
+          console.error(error, "error");
+        });
+      })
+  }
+
+  updateOrderReport() {
+    this.show = true;
+    this.messageService.translateText(this.order.stateDAMReport, this.preferredLanguage).subscribe(data => {
+      let messagestateDAMReport = this.order.stateDAMReport;
+      const order: any = {
+        stateDAMCheck: true,
+        stateDAMReportMessage: messagestateDAMReport,
+        stateDAMReport: JSON.parse(JSON.stringify(data[0].translations[0].text))
+      }
+
+      this.orderService.updateOrder(this.id, order).then(() => {
+        this.show = false;
+        this.toastr.info('Se ha informado el problema correctamente', 'Estado de exportación', {
+          positionClass: 'toast-bottom-right'
+        });
+      });
+    })
   }
 
 

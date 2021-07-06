@@ -5,4 +5,5 @@ export class UserTest {
     name: string;
     firstName?: string;
     preferredLanguage?: string;
+    userImage?:string;
 }

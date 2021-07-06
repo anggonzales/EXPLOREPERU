@@ -18,11 +18,12 @@ export class ChatComponent implements OnInit {
 
   message: Message = new Message();
   messages: any[] = [];
+  messagesSort: any[] = [];
   users: any[] = [];
   messageObject: any;
   userSellerId: any = {};
-  public userSelect: any = null;
-  public from;
+  userSelect: any = null;
+  from;
   sortedMessages: any = [];
 
 
@@ -55,55 +56,29 @@ export class ChatComponent implements OnInit {
     this.messageService.getMessagesFilter(to, this.from).subscribe(data => {
       this.messages = [];
       this.messages = data;
+
       this.messageService.getMessagesFilterUserBuyer(to, this.from).subscribe(data => {
         for (const i in data) {
           this.messages.push(data[i]);
-          //console.log(this.messages)
-          
         }
-        
-        //this.messages.sort((x,y) => <any> new Date(x.createAt) - <any> new Date(y.createAt));
-        this.messages.sort(function(x, y) {
-          let a =  <any> new Date(x.createAt);
-          let b = <any> new Date(y.createAt);
+
+        this.messages.sort(function (x, y) {
+          let a = <any>new Date(x.createAt);
+          let b = <any>new Date(y.createAt);
           return a - b;
         });
-        //this.sortedMessages = this.messages.sort((a,b) => a.createAt - b.createAt);
+        
       });
     });
-
-    /*this.messages.sort(function(x, y) {
-      let a =  <any> new Date(x.createAt);
-      let b = <any> new Date(y.createAt);
-      console.log("Ordenado", a-b);
-      return a - b;
-    });*/
-    
 
     this.userService.getUser(to).subscribe(data => {
       this.userSelect = JSON.parse(JSON.stringify(data[0]));
       this.userSelect.id = JSON.parse(JSON.stringify(data[0].id));
-      //console.log(this.userSelect.id);
+      this.userSelect.userImage = JSON.parse(JSON.stringify(data[0].userImage));
     });
 
     this.scrollToBottom();
   }
-
-  getMessages() {
-    this.messageService.getMessages().pipe(
-      map(changes =>
-        changes.map(c =>
-        ({
-          id: c.payload.doc.id,
-          ...c.payload.doc.data()
-        })
-        )
-      )
-    ).subscribe(data => {
-      this.messages = data;
-    });
-  }
-
 
   saveMessage(sendMessage) {
     let date = Date.now();
@@ -118,17 +93,16 @@ export class ChatComponent implements OnInit {
       };
     }
 
-    //this.messageService.sendMessage(this.message);
-
     this.messageService.translateText(this.message.messageText, this.userSelect.languageCode).subscribe(
       res => {
         this.message.translatedMessage = JSON.parse(JSON.stringify(res[0].translations[0].text));
-        console.log(this.message.translatedMessage);
         this.messageService.sendMessage(this.message);
         console.log('Se ha ingresado satisfactoriamente el mensaje');
+        this.message.messageText = "";
       });
 
     this.scrollToBottom();
+
   }
 
   scrollToBottom(): void {

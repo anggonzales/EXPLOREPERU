@@ -10,7 +10,7 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './quotation-list.component.html',
   styleUrls: ['./quotation-list.component.css']
 })
-export class QuotationListComponent implements OnDestroy, OnInit {
+export class QuotationListComponent implements OnInit, OnDestroy {
 
   userSellerId: any = {};
   quotations: any[] = [];
@@ -37,11 +37,9 @@ export class QuotationListComponent implements OnDestroy, OnInit {
   getQuotationFilter() {
     this.quotationService.getQuotationFilter(this.userSellerId).subscribe(data => {
       this.quotations = [];
-
       for (const i in data) {
         this.quotations.push(data[i]);
       }
-      
       this.datatableTrigger.next();
     });
   }
@@ -50,7 +48,6 @@ export class QuotationListComponent implements OnDestroy, OnInit {
     if (productId !== null) {
       this.productService.getProduct(productId).subscribe(data => {
         this.productName = data.payload.data()['name'];
-        console.log(this.productName);
       });
     }
   }
@@ -63,14 +60,8 @@ export class QuotationListComponent implements OnDestroy, OnInit {
     }
   }
 
-  /*getQuotationFilter() {
-    this.quotationService.getQuotationFilter(this.userSellerId).subscribe(data => {
-      this.quotations = data;
-      this.datatableTrigger.next();
-    });
-  }*/
-
   ngOnDestroy(): void {
-    //this.datatableTrigger.unsubscribe();
+    this.datatableTrigger.unsubscribe();
   }
+
 }

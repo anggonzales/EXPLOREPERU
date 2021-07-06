@@ -43,11 +43,11 @@ app.use(bodyParser.json());
 app.post('/sendFormData', (req, res) => {
   console.log(req.body, 'data of form');
   var transporter = nodemailer.createTransport({
-    host: "smtp.mailtrap.io",
-    port: 2525,
+    host: "smtp.gmail.com",
+    port: 587,
     auth: {
-      user: "79037e3020beac",
-      pass: "26da657c27b4c5"
+      user: "exportandomateria@gmail.com",
+      pass: ""
     }
   });
 
@@ -56,8 +56,8 @@ app.post('/sendFormData', (req, res) => {
     let htmlToSend = template(req);
 
     var mailOptions = {
-      from: 'aggc@gmail.com',
-      to: 'info@info.com',
+      from: 'exportandomateria@gmail.com',
+      to: req.body.email,
       subject: "Information about the process of your order",
       html: htmlToSend
 

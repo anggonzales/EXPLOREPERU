@@ -120,6 +120,10 @@
                                                     <div class="form-group">
                                                         <button type="submit" class="btn btn-info btn-xm">Actualizar
                                                             avance</button>
+
+                                                        <button type="button" class="btn btn-warning btn-xm ml-5"
+                                                            data-toggle="modal" data-target="#exampleModalXl">Reportar
+                                                            problema</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,6 +220,68 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Register -->
+<div class="modal fade" id="exampleModalXl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+    style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pedido reporte</h5>
+                <button class="close" #closebutton type="button" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group">
+                                <button class="btn btn-secondary btn-sm" type="button" data-toggle="modal"
+                                    data-target="#exampleModalXl">
+                                    <i class="fas fa-plus"></i> Agregar problema
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <div class="card shadow mb-4">
+                                    <!-- Card Header - Accordion -->
+                                    <a href="#collapseCardExample" class="d-block card-header py-3"
+                                        data-toggle="collapse" role="button" aria-expanded="true"
+                                        aria-controls="collapseCardExample">
+                                        <h6 class="m-0 font-weight-bold text-primary">Detalle</h6>
+                                    </a>
+                                    <!-- Card Content - Collapse -->
+                                    <div class="collapse show" id="collapseCardExample">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label>Seleccione el proceso</label>
+                                                <select class="form-control">
+                                                    <option *ngIf="stateProduction !== '100'" value="stateProductionReport">Avance de Producción
+                                                    </option>
+                                                    <option *ngIf="checkDAM !== true" value="stateDAMReport">Generación de Documento Aduanero de
+                                                        Mercancías
+                                                    </option>
+                                                    <option *ngIf="checkDepostTemporary !== true" value="stateDepostTemporaryReport">Depósito Temporal
+                                                    </option>
+                                                    <option *ngIf="checkOrder !== true" value="stateOrderReport">Orden de Salida</option>
+                                                </select>
+                                            </div>
+                                            <label>Descripción</label>
+                                            <textarea class="form-control" rows="3" [(ngModel)]="order.stateDAMReport"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="button" (click)="updateOrderReport()" class="btn btn-success">Informar</button>
+                    </div>
                 </div>
             </div>
         </div>

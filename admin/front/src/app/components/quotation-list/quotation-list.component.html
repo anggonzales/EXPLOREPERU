@@ -35,16 +35,25 @@
                                 <tbody>
                                     <tr *ngFor="let quotation of quotations; index as i">
                                         <td>{{ i + 1 }}</td>
-                                        <td>{{ quotation.productName}} </td>
-                                        <td></td>
+                                        <td>{{ quotation.productName }}</td>
+                                        <td>{{ quotation.userName }}</td>
                                         <td>{{ quotation.destiny }}</td>
                                         <td>{{ quotation.aplicationDate }}</td>
-                                        <td>{{ quotation.status }}</td>
+                                        <td *ngIf="quotation.status === 'Por atender'"><button
+                                                class="btn btn-secondary btn-sm" type="button">
+                                                <i class="fas fa-spinner mr-2"></i>{{ quotation.status }}</button></td>
+
+                                        <td *ngIf="quotation.status === 'Respondido'"><button
+                                                class="btn btn-success btn-sm" type="button">
+                                                <i class="fas fa-check mr-2"></i>{{ quotation.status }}</button></td>
+
+                                        <td *ngIf="quotation.status === 'Rechazado'"><button
+                                                class="btn btn-danger btn-sm" type="button">
+                                                <i class="fas fa-times mr-2"></i>{{ quotation.status }}</button></td>
+
                                         <td>
                                             <a [routerLink]="['/editquotation/', quotation.id]"
                                                 class="btn btn-warning mr-3"><i class="fa fa-edit"></i></a>
-                                            <a [routerLink]="['/orderconsult/',quotation.id]" class="btn btn-secondary mr-3"><i
-                                                    class="fas fa-vector-square"></i></a>
                                         </td>
                                     </tr>
                                 </tbody>

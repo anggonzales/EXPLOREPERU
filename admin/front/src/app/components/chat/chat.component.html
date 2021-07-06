@@ -41,11 +41,9 @@
 
                                                     <div class="avatar avatar-online mr-5">
                                                         <img class="avatar-img"
-                                                            src="../../../assets/images/users_chat.png"
-                                                            alt="Anna Bridges">
+                                                            src="../../../assets/images/users_chat.png" alt="" >
+                                                        
                                                     </div>
-
-
                                                     <div class="media-body overflow-hidden">
                                                         <div class="d-flex align-items-center mb-1">
                                                             <h6 class="text-truncate mb-0 mr-auto">{{item.name}}</h6>
@@ -157,8 +155,8 @@
                                                 <!-- Message: content -->
                                                 <div class="message-content bg-light">
                                                     <h6 class="mb-2">{{userSelect.name}}</h6>
-                                                    <div>{{message.messageText}}</div>
                                                     <div>{{message.translatedMessage}}</div>
+                                                    <div>{{message.messageText}}</div>
                                                     <div class="mt-1">
                                                         <small class="opacity-65">{{message.createAt}}</small>
                                                     </div>
@@ -177,7 +175,9 @@
                                 <div class="message message-right" *ngIf="from === message.from">
                                     <!-- Avatar -->
                                     <div class="avatar avatar-sm ml-4 ml-lg-5 d-none d-lg-block">
-                                        <img class="avatar-img" src="../../../assets/images/users_chat.png" alt="">
+                                        <img class="avatar-img"
+                                            src="https://firebasestorage.googleapis.com/v0/b/explore-peru-from-abroad.appspot.com/o/users%2FLogo_bu.jpg?alt=media&token=f21aff0f-c678-4979-9fb1-5d44d0004e26"
+                                            alt="">
                                     </div>
 
                                     <!-- Message: body -->
@@ -190,7 +190,7 @@
                                                 <!-- Message: content -->
                                                 <div class="message-content bg-primary text-white">
                                                     <h6 class="mb-2"></h6>
-                                                    <div>{{userSelect.name}}</div>
+                                                    <div>Romex</div>
                                                     <div>{{message.messageText}}</div>
                                                     <div>{{message.translatedMessage}}</div>
                                                     <div class="mt-1">
@@ -237,7 +237,8 @@
                     <div class="chat-footer border-top py-4 py-lg-6 px-lg-8">
                         <div class="container-xxl">
 
-                            <form id="chat-id-2-form" #sendMessage="ngForm" (ngSubmit)="saveMessage(sendMessage)" data-emoji-form="">
+                            <form id="chat-id-2-form" #sendMessage="ngForm" (ngSubmit)="saveMessage(sendMessage)"
+                                data-emoji-form="">
                                 <div class="form-row align-items-center">
                                     <div class="col">
                                         <div class="input-group">
@@ -245,7 +246,8 @@
                                             <!-- Textarea -->
                                             <textarea id="chat-id-2-input" class="form-control bg-transparent border-0"
                                                 placeholder="Escribe tu mensaje" rows="1" data-emoji-input=""
-                                                data-autosize="true" #messageText="ngModel" name="messageText" [(ngModel)]="message.messageText"></textarea>
+                                                data-autosize="true" #messageText="ngModel" name="messageText"
+                                                [(ngModel)]="message.messageText"></textarea>
                                             <!-- Emoji button -->
                                         </div>
                                     </div>

@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { INg2LoadingSpinnerConfig } from 'ng2-loading-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { MessageService } from 'src/app/services/message.service';
@@ -24,6 +25,14 @@ export class QuoteComponent implements OnInit {
   datatableTrigger: Subject<any> = new Subject<any>();
   /* ------------------------------------------------ */
 
+  /* Código para la configuración de popover confirmation */
+  placements = ['top', 'left', 'right', 'bottom'];
+  popoverTitle = 'Mensaje de confirmación';
+  popoverMessage = '¿Está seguro de realizar esta operación?';
+  confirmText = 'Sí <i class="fas fa-check"></i>';
+  cancelText = 'No <i class="fas fa-times"></i>';
+  /*------------------------------------------------------*/
+
   id: string | null;
   formQuotation: FormGroup;
 
@@ -31,16 +40,24 @@ export class QuoteComponent implements OnInit {
   productId: string;
   productName: string | null;
   productImage: string;
+  productAmount: string;
+  productTranslate: string;
 
   userBuyerId: string;
   userBuyerName: string | null;
   preferredLanguage: string | null;
   userBuyerEmail: string | null;
-  
 
-  messageAnswered: string;
+  quotationState: string;
+  messageAnsweredUserSeller: string | null;
   userSellerId: any = {};
   submitted = false;
+
+  show = false;
+
+  loadingConfig: INg2LoadingSpinnerConfig = {
+   
+  };
 
   constructor(private quotationService: QuotationService,
     private productService: ProductService,
@@ -62,15 +79,12 @@ export class QuoteComponent implements OnInit {
       destiny: [{ value: '', disabled: true }, Validators.required],
       shippingDate: [{ value: '', disabled: true }, Validators.required],
       status: [{ value: '', disabled: true }, Validators.required],
-      messageTranslate: [{ value: '', disabled: true }],
-      messageAnswered: [{ value: '', disabled: false }],
+      messageUserSeller: [{ value: '', disabled: false }],
+      messageUserBuyer: [{ value: '', disabled: true }],
       nameClient: [{ value: '', disabled: false }, Validators.required],
-      emailClient: [{ value: '', disabled: false }, Validators.required],
-      messageAnsweredTranslate: [{ value: '', disabled: true }]
+      emailClient: [{ value: '', disabled: false }, Validators.required]
     });
-
     this.id = this.aRoute.snapshot.paramMap.get('id');
-    console.log(this.id);
     this.userSellerId = this.userService.getIdentity();
   }
 
@@ -87,6 +101,9 @@ export class QuoteComponent implements OnInit {
         this.productId = data.payload.data()['productId'];
         this.userBuyerId = data.payload.data()['userId'];
 
+        this.quotationState = data.payload.data()['status'];
+        this.productAmount = data.payload.data()['estimateAmount'];
+
         this.formQuotation.setValue({
           nameProduct: '',
           nameClient: '',
@@ -97,9 +114,8 @@ export class QuoteComponent implements OnInit {
           destiny: data.payload.data()['destiny'],
           shippingDate: data.payload.data()['shippingDate'],
           status: data.payload.data()['status'],
-          messageTranslate: data.payload.data()['messageTranslate'],
-          messageAnswered: data.payload.data()['messageAnswered'],
-          messageAnsweredTranslate: data.payload.data()['messageAnsweredTranslate']
+          messageUserSeller: data.payload.data()['messageUser'],
+          messageUserBuyer: data.payload.data()['messageAnsweredTranslate']
         });
       });
     }
@@ -111,7 +127,10 @@ export class QuoteComponent implements OnInit {
         this.productName = res.payload.data()['name'];
         this.productImage = res.payload.data()['image'];
         this.formQuotation.controls['nameProduct'].setValue(this.productName);
-        
+        this.messageService.translateText(this.productName, this.preferredLanguage).subscribe(
+          data => {
+            this.productTranslate = JSON.parse(JSON.stringify(data[0].translations[0].text));
+          })
       });
     }
   }
@@ -129,11 +148,12 @@ export class QuoteComponent implements OnInit {
   }
 
   getMessageTranslate() {
-    this.messageService.translateText(this.formQuotation.controls['messageAnswered'].value, this.preferredLanguage).subscribe(
-      res => {
-        this.messageAnswered = JSON.parse(JSON.stringify(res[0].translations[0].text));
-        this.formQuotation.controls['messageAnsweredTranslate'].setValue(this.messageAnswered);
-      });
+    this.messageService.translateText(this.formQuotation.value.messageUserSeller, this.preferredLanguage).subscribe(
+      data => {
+        this.messageAnsweredUserSeller = JSON.parse(JSON.stringify(data[0].translations[0].text));
+        this.editQuotation(this.id);
+        this.sendMailQuotation();
+      })
   }
 
   updateQuotation() {
@@ -143,19 +163,19 @@ export class QuoteComponent implements OnInit {
     }
 
     if (this.id !== null) {
-      this.editQuotation(this.id);
-      this.sendMailQuotation();
+      this.getMessageTranslate();
       this.createOrder();
     }
   }
 
   createOrder() {
-
+    this.show = true;
     const order = {
       userSeller: this.userSellerId,
       userId: this.userBuyerId,
       productName: this.productName,
       productId: this.productId,
+      quotationId: this.id,
       userBuyerName: this.userBuyerName,
       priceProduct: this.formQuotation.controls['price'].value,
       paymentTerms: this.formQuotation.controls['paymentTerms'].value,
@@ -170,7 +190,7 @@ export class QuoteComponent implements OnInit {
     }
 
     this.orderService.createOrder(order).then(() => {
-      console.log('Se ha generado correctamente el pedido');
+      this.show = false;
       this.toastr.success('El pedido se ha agregado correctamente', 'Pedido registrado', {
         positionClass: 'toast-bottom-right'
       });
@@ -184,8 +204,8 @@ export class QuoteComponent implements OnInit {
   editQuotation(id: string) {
     const quotation: any = {
       status: 'Respondido',
-      messageAnswered: this.formQuotation.value.messageAnswered,
-      messageAnsweredTranslate: this.formQuotation.controls['messageAnswered'].value
+      messageUser: this.formQuotation.value.messageUserSeller,
+      messageTranslate: this.messageAnsweredUserSeller
     }
 
     this.quotationService.updateQuotation(id, quotation).then(() => {
@@ -199,10 +219,14 @@ export class QuoteComponent implements OnInit {
   sendMailQuotation() {
     let date = Date.now();
     var emailData = {
-      pedidoId: this.id,
+      orderId: this.id,
       name: this.userBuyerName,
-      message: this.messageAnswered,
+      message: this.messageAnsweredUserSeller,
       email: this.userBuyerEmail,
+      productName: this.productTranslate,
+      productImage: this.productImage,
+      productAmount: this.productAmount,
+      orderUser: '',
       createAt: this.dateFormat.transform(date, 'MMM d, y, h:mm:ss a')
     }
 
@@ -215,4 +239,14 @@ export class QuoteComponent implements OnInit {
     });
   }
 
+  cancelQuotation(){
+    
+  }
+
+  showLoading() {
+    this.show = true;
+    setTimeout(() => {
+      this.show = false;
+    }, 1500);
+  }
 }
